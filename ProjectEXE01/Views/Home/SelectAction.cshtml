@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Báo cáo hoặc Khiếu nại";
+}
+
+<div class="report-page d-flex flex-column align-items-center justify-content-center text-center py-5 px-3">
+    <div class="intro mb-5">
+        <h1 class="fw-bold text-danger mb-3 animate__animated animate__fadeInDown">🛡️ Chung tay chống lừa đảo</h1>
+        <p class="lead text-secondary animate__animated animate__fadeInUp" style="max-width: 750px; margin: 0 auto;">
+            Khi phát hiện dấu hiệu lừa đảo trên không gian mạng, hãy <strong class="text-danger">báo cáo ngay</strong> cho chúng tôi.<br />
+            Bạn cũng có thể gửi khiếu nại về các đánh giá không chính xác hoặc trường hợp bị đưa vào danh sách chặn mà không rõ lý do.
+            <br /><br />
+            Mỗi báo cáo của bạn đều góp phần tạo nên một môi trường Internet an toàn hơn cho tất cả người dùng.<br />
+            <strong class="text-dark">Chân thành cảm ơn sự đóng góp quý báu của bạn!</strong>
+        </p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <!-- Nút Báo cáo -->
+        <div class="col-md-4 col-sm-10">
+            <a href="/Home/Report" class="action-card report-card text-decoration-none d-block p-4 shadow-lg rounded-4">
+                <div class="icon-circle bg-danger bg-gradient text-white mb-3 mx-auto">
+                    <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
+                </div>
+                <h3 class="fw-bold text-danger mb-2">Báo cáo lừa đảo</h3>
+                <p class="text-secondary">
+                    Gửi thông tin về số điện thoại, tài khoản ngân hàng hoặc đường link có dấu hiệu lừa đảo.
+                </p>
+            </a>
+        </div>
+
+        <!-- Nút Khiếu nại -->
+        <div class="col-md-4 col-sm-10">
+            <a href="/Home/Appeal" class="action-card appeal-card text-decoration-none d-block p-4 shadow-lg rounded-4">
+                <div class="icon-circle bg-primary bg-gradient text-white mb-3 mx-auto">
+                    <i class="fa-solid fa-shield-halved fa-2x"></i>
+                </div>
+                <h3 class="fw-bold text-primary mb-2">Gửi khiếu nại</h3>
+                <p class="text-secondary">
+                    Khiếu nại về việc bị báo cáo sai hoặc muốn xác minh lại danh sách chặn.
+                </p>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a2d9b12345.js" crossorigin="anonymous"></script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f9fafc 0%, #eef3ff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .report-page {
+        min-height: 100vh;
+    }
+
+    .action-card {
+        background-color: white;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .icon-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-card:hover {
+        transform: translateY(-10px);
+        border-color: #dc3545;
+        box-shadow: 0 15px 35px rgba(220, 53, 69, 0.25);
+    }
+
+    .appeal-card:hover {
+        transform: translateY(-10px);
+        border-color: #0d6efd;
+        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.25);
+    }
+
+    .report-card:hover .icon-circle {
+        background: linear-gradient(135deg, #dc3545, #ff6b6b);
+    }
+
+    .appeal-card:hover .icon-circle {
+        background: linear-gradient(135deg, #0d6efd, #5dade2);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .action-card {
+            width: 90%;
+            margin: 0 auto;
+        }
+    }
+</style>

@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Báo cáo lừa đảo";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-danger mb-3">📢 BÁO CÁO LỪA ĐẢO</h1>
+        <p class="text-muted" style="max-width: 750px; margin: 0 auto;">
+            Mỗi ngày, hàng nghìn người dùng có thể trở thành nạn nhân của các chiêu trò lừa đảo trên mạng:
+            <strong>giả mạo thương hiệu, chuyển tiền sai mục đích, link giả mạo</strong>…
+            Hãy giúp chúng tôi ngăn chặn điều đó bằng cách gửi báo cáo của bạn ngay hôm nay!
+        </p>
+    </div>
+
+    <div class="alert alert-warning shadow-sm" role="alert">
+        ⚠️ <strong>Lưu ý:</strong> Chỉ gửi thông tin mà bạn chắc chắn có dấu hiệu lừa đảo.
+        Tất cả báo cáo đều được kiểm duyệt và xác minh trước khi công bố.
+    </div>
+
+    <div class="card border-0 shadow-lg p-4 mt-4">
+        <h4 class="fw-bold mb-3 text-danger">📝 Thông tin cần báo cáo</h4>
+        <form method="post" action="/Home/SubmitReport">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Loại đối tượng nghi ngờ</label>
+                <select class="form-select" name="Type" required>
+                    <option value="">-- Chọn loại --</option>
+                    <option value="phone">Số điện thoại</option>
+                    <option value="bank">Tài khoản ngân hàng</option>
+                    <option value="link">Đường link website</option>
+                    <option value="other">Khác</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nội dung nghi ngờ *</label>
+                <input type="text" name="Content" class="form-control" placeholder="Nhập số điện thoại, link hoặc tài khoản..." required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Mô tả chi tiết</label>
+                <textarea name="Description" class="form-control" rows="4" placeholder="Hãy mô tả lý do bạn nghi ngờ, nội dung tin nhắn, hoặc bằng chứng bạn có..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Tải ảnh (nếu có)</label>
+                <input type="file" class="form-control" name="Image" accept="image/*" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email hoặc số điện thoại liên hệ (tùy chọn)</label>
+                <input type="text" class="form-control" name="ReporterContact" placeholder="Để chúng tôi có thể liên hệ xác minh thêm thông tin" />
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-danger px-4 py-2 fw-bold rounded-pill shadow">
+                    🚨 GỬI BÁO CÁO NGAY
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-5 text-center text-muted small">
+        <p>
+            Sau khi gửi, thông tin của bạn sẽ được hệ thống kiểm tra và xử lý trong thời gian sớm nhất.
+            Mọi báo cáo đều được <strong>bảo mật tuyệt đối</strong> và chỉ dùng cho mục đích cảnh báo cộng đồng.
+        </p>
+        <p class="mt-3">💪 Cảm ơn bạn đã góp phần xây dựng một không gian mạng an toàn hơn!</p>
+    </div>
+</div>
+
+<style>
+    body {
+        background: #fafafa;
+    }
+
+    .card {
+        border-radius: 16px;
+    }
+
+    .btn-danger {
+        transition: all 0.2s ease-in-out;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220,53,69,0.3);
+        }
+
+    .alert-warning {
+        border-left: 6px solid #ffc107;
+        border-radius: 10px;
+    }
+</style>

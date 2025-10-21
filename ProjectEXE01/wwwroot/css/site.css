@@ -1,0 +1,49 @@
+/* Hero section */
+.hero-section {
+    background: linear-gradient(120deg, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+    color: white;
+    border-bottom: 5px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.search-form {
+    max-width: 700px;
+}
+
+.input-group input {
+    border-radius: 12px 0 0 12px !important;
+    padding-left: 20px;
+}
+
+.input-group .btn {
+    border-radius: 0 12px 12px 0 !important;
+}
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+footer {
+    font-size: 0.9rem;
+}

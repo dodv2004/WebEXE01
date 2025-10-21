@@ -1,0 +1,48 @@
+﻿@model DAL.Models.Result
+
+@{
+    ViewData["Title"] = "Kết quả tra cứu";
+}
+
+<div class="container py-5">
+    <h2 class="text-center mb-4 text-danger fw-bold">Kết quả tra cứu chống lừa đảo</h2>
+
+    <div class="card shadow p-4">
+        <h5 class="mb-3">Thông tin bạn tra cứu:</h5>
+        <p><strong>🔍 Từ khóa:</strong> @Model.Query</p>
+
+        @if (Model.Found)
+        {
+            <div class="alert alert-danger">
+                <h5>⚠️ Đã có báo cáo!</h5>
+                <p><strong>Loại:</strong> @Model.Type</p>
+                <p><strong>Phán quyết:</strong> @Model.Verdict</p>
+                <p><strong>Số lần bị báo cáo:</strong> @Model.ReportCount</p>
+                <p><strong>Lần cuối được kiểm tra:</strong> @Model.CheckedAt.ToString("dd/MM/yyyy HH:mm")</p>
+
+                @if (Model.Reporters.Any())
+                {
+                    <hr />
+                    <p><strong>Người báo cáo:</strong></p>
+                    <ul>
+                        @foreach (var reporter in Model.Reporters)
+                        {
+                            <li>@reporter</li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">
+                <h5>✅ Số này / Tài khoản / Link chưa từng bị báo cáo.</h5>
+                <p>Bạn có thể yên tâm hơn, nhưng vẫn nên cẩn trọng khi giao dịch.</p>
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">🔙 Tra cứu khác</a>
+        </div>
+    </div>
+</div>
