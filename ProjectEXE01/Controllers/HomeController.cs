@@ -102,6 +102,10 @@ namespace ProjectEXE01.Controllers
         {
             return View();
         }
+        public IActionResult History()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
