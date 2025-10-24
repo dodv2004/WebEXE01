@@ -27,7 +27,7 @@ namespace BLL.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task AddReportAsync(string query, string type, string reporterName, string reporterEmail, string note)
+        public async Task<(bool Success, string Message)> AddReportAsync(string query, string type, string reporterName, string reporterEmail, string note)
         {
             var reporter = new Reporter
             {
@@ -36,7 +36,13 @@ namespace BLL.Services
             };
 
             await _repository.AddReportAsync(query, type, reporter, note);
-            await _repository.SaveAsync();
+            // Kiểm tra xem quan hệ đã được thêm thành công
+            var existingRelation = await _repository.GetByQueryAsync(query);
+            if (existingRelation?.ReporterReportChecks?.Any(rr => rr.Reporter.Email == reporterEmail) ?? false)
+            {
+                return (true, "Báo cáo của bạn đã được gửi thành công!");
+            }
+            return (false, "Bạn đã báo cáo mục này trước đó. Không thể báo cáo lại!");
         }
     }
 }

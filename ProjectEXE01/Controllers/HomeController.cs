@@ -61,19 +61,51 @@ namespace ProjectEXE01.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> SubmitReport(string query, string type, string reporterName, string reporterEmail, string note)
+        //{
+        //    if (string.IsNullOrWhiteSpace(query))
+        //    {
+        //        TempData["Error"] = "Vui lòng nhập thông tin cần báo cáo.";
+        //        return RedirectToAction("Report");
+        //    }
+
+        //    await _service.AddReportAsync(query, type, reporterName, reporterEmail, note);
+        //    TempData["Success"] = "Báo cáo của bạn đã được gửi. Xin cảm ơn sự đóng góp!";
+        //    return RedirectToAction("Index");
+        //}
+
+
         [HttpPost]
-        public async Task<IActionResult> SubmitReport(string query, string type, string reporterName, string reporterEmail, string note)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SubmitReport(ReportViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(query))
+            if (!ModelState.IsValid)
             {
-                TempData["Error"] = "Vui lòng nhập thông tin cần báo cáo.";
+                TempData["Error"] = "Vui lòng kiểm tra lại thông tin nhập vào.";
                 return RedirectToAction("Report");
             }
 
-            await _service.AddReportAsync(query, type, reporterName, reporterEmail, note);
-            TempData["Success"] = "Báo cáo của bạn đã được gửi. Xin cảm ơn sự đóng góp!";
-            return RedirectToAction("Index");
+            try
+            {
+                var (success, message) = await _service.AddReportAsync(model.Query, model.Type, model.ReporterName, model.ReporterEmail, model.Note);
+                if (success)
+                {
+                    TempData["Success"] = message;
+                }
+                else
+                {
+                    TempData["Error"] = message;
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Có lỗi xảy ra: " + ex.Message;
+            }
+
+            return RedirectToAction("Report");
         }
+
 
 
 
@@ -98,9 +130,12 @@ namespace ProjectEXE01.Controllers
             return View();
         }
 
-        public IActionResult Report()
+        [HttpGet]
+        public ActionResult Report()
         {
-            return View();
+            ViewBag.Success = TempData["Success"] as string;
+            ViewBag.Error = TempData["Error"] as string;
+            return View(new ReportViewModel());
         }
         public IActionResult History()
         {

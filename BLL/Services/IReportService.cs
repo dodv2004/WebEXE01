@@ -11,6 +11,6 @@ namespace BLL.Services
     {
         Task<ReportCheck?> SearchAsync(string query);
         Task<IEnumerable<ReportCheck>> GetAllAsync();
-        Task AddReportAsync(string query, string type, string reporterName, string reporterEmail, string note);
+        Task<(bool Success, string Message)> AddReportAsync(string query, string type, string reporterName, string reporterEmail, string note);
     }
 }

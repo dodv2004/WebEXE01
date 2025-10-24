@@ -18,7 +18,6 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        // Lấy thông tin theo số điện thoại / STK / link
         public async Task<ReportCheck?> GetByQueryAsync(string query)
         {
             return await _context.ReportChecks
@@ -36,7 +35,6 @@ namespace DAL.Repositories
                 .ToListAsync();
         }
 
-        // Thêm 1 báo cáo mới (nếu chưa có thì tạo mới ReportCheck)
         public async Task AddReportAsync(string query, string type, Reporter reporter, string note)
         {
             var existingReportCheck = await _context.ReportChecks
@@ -55,25 +53,36 @@ namespace DAL.Repositories
                 _context.ReportChecks.Add(existingReportCheck);
             }
 
-            existingReportCheck.ReportCount++;
-
-            // Kiểm tra xem người báo cáo đã tồn tại chưa
-            var existingReporter = await _context.Reporters.FirstOrDefaultAsync(r => r.Email == reporter.Email);
-            if (existingReporter == null)
+            // Kiểm tra và sử dụng Reporter đã tồn tại
+            var existingReporter = await _context.Reporters
+                .FirstOrDefaultAsync(r => r.Email == reporter.Email) ?? reporter;
+            if (existingReporter.Id == 0) // Nếu là Reporter mới
             {
-                existingReporter = reporter;
                 _context.Reporters.Add(existingReporter);
+                await SaveAsync(); // Lưu Reporter trước khi tạo quan hệ
             }
 
-            // Thêm bản ghi vào bảng trung gian
+            // Kiểm tra xem Reporter này đã báo cáo ReportCheck này chưa
+            var existingRelation = await _context.ReporterReportChecks
+                .FirstOrDefaultAsync(rr => rr.ReporterId == existingReporter.Id && rr.ReportCheckId == existingReportCheck.Id);
+
+            if (existingRelation != null)
+            {
+                // Không cho phép báo cáo lại nếu đã tồn tại
+                return; // Thoát phương thức, không thêm quan hệ mới
+            }
+
+            // Tăng ReportCount nhưng chỉ thêm quan hệ mới nếu chưa tồn tại
+            existingReportCheck.ReportCount++;
             var relation = new ReporterReportCheck
             {
-                Reporter = existingReporter,
-                ReportCheck = existingReportCheck,
+                ReporterId = existingReporter.Id,
+                ReportCheckId = existingReportCheck.Id,
                 Note = note
             };
-
             _context.ReporterReportChecks.Add(relation);
+
+            await SaveAsync();
         }
 
         public async Task SaveAsync()

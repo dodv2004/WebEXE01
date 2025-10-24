@@ -16,9 +16,9 @@
             <div class="alert alert-danger">
                 <h5>⚠️ Đã có báo cáo!</h5>
                 <p><strong>Loại:</strong> @Model.Type</p>
-                <p><strong>Phán quyết:</strong> @Model.Verdict</p>
+                <p><strong>Trạng thái:</strong> @Model.Verdict</p>
                 <p><strong>Số lần bị báo cáo:</strong> @Model.ReportCount</p>
-                <p><strong>Lần cuối được kiểm tra:</strong> @Model.CheckedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                <p><strong>Báo cáo gần nhất:</strong> @Model.CheckedAt.ToString("dd/MM/yyyy HH:mm")</p>
 
                 @if (Model.Reporters.Any())
                 {
