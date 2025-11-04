@@ -16,8 +16,12 @@ namespace ProjectEXE01.Controllers
         }
 
         [HttpGet]
+        [HttpGet]
         public IActionResult Index()
         {
+            // Sử dụng ViewBag/TempData để truyền thông báo từ các RedirectToAction khác
+            ViewBag.Message = TempData["Message"] as string;
+            ViewBag.IsError = TempData["IsError"] as bool? ?? false;
             return View();
         }
 
@@ -26,33 +30,33 @@ namespace ProjectEXE01.Controllers
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-                TempData["Error"] = "Vui lòng nhập số điện thoại, STK hoặc link.";
+                TempData["Message"] = "Vui lòng nhập thông tin tra cứu.";
+                TempData["IsError"] = true;
                 return RedirectToAction("Index");
             }
 
-            var report = await _service.SearchAsync(query);
-            var result = new Result
-            {
-                Query = query
-            };
+            // Gọi Service đã được tối ưu để trả về Result DTO
+            var (success, message, result) = await _service.SearchAsync(query);
 
-            if (report != null)
+            if (!success)
             {
-                result.Found = true;
-                result.Type = report.Type;
-                result.Verdict = report.Verdict;
-                result.ReportCount = report.ReportCount;
-                result.CheckedAt = report.CheckedAt;
-                result.Reporters = report.ReporterReportChecks?
-                    .Select(rr => rr.Reporter.Name + " (" + rr.Reporter.Email + ")")
-                    .ToList() ?? new List<string>();
-            }
-            else
-            {
-                result.Found = false;
+                // Xử lý các lỗi nghiệp vụ trong Service
+                TempData["Message"] = message;
+                TempData["IsError"] = true;
+                return RedirectToAction("Index");
             }
 
+            // Trả về View Result với DTO
             return View("Result", result);
+        }
+
+        [HttpGet]
+        public ActionResult Report()
+        {
+
+            ViewBag.Message = TempData["Message"] as string;
+            ViewBag.IsError = TempData["IsError"] as bool? ?? false;
+            return View(new ReportViewModel());
         }
 
         [HttpGet]
@@ -61,20 +65,6 @@ namespace ProjectEXE01.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> SubmitReport(string query, string type, string reporterName, string reporterEmail, string note)
-        //{
-        //    if (string.IsNullOrWhiteSpace(query))
-        //    {
-        //        TempData["Error"] = "Vui lòng nhập thông tin cần báo cáo.";
-        //        return RedirectToAction("Report");
-        //    }
-
-        //    await _service.AddReportAsync(query, type, reporterName, reporterEmail, note);
-        //    TempData["Success"] = "Báo cáo của bạn đã được gửi. Xin cảm ơn sự đóng góp!";
-        //    return RedirectToAction("Index");
-        //}
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,32 +72,64 @@ namespace ProjectEXE01.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = "Vui lòng kiểm tra lại thông tin nhập vào.";
-                return RedirectToAction("Report");
+                // KHI KHÔNG HỢP LỆ (Không có Redirect, dùng ViewBag)
+                ViewBag.Message = "Vui lòng kiểm tra lại thông tin nhập vào.";
+                ViewBag.IsError = true;
+                return View("Report", model);
             }
 
             try
             {
-                var (success, message) = await _service.AddReportAsync(model.Query, model.Type, model.ReporterName, model.ReporterEmail, model.Note);
-                if (success)
-                {
-                    TempData["Success"] = message;
-                }
-                else
-                {
-                    TempData["Error"] = message;
-                }
+                var (success, message) = await _service.AddReportAsync(
+                    model.Query, model.Type, model.ReporterName, model.ReporterEmail, model.Note
+                );
+
+                // KHI THÀNH CÔNG/LỖI NGHIỆP VỤ (Có Redirect, dùng TempData)
+                TempData["Message"] = message;
+                TempData["IsError"] = !success;
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Có lỗi xảy ra: " + ex.Message;
+                TempData["Message"] = "Có lỗi hệ thống xảy ra. Vui lòng thử lại sau. (" + ex.Message + ")";
+                TempData["IsError"] = true;
             }
 
             return RedirectToAction("Report");
         }
 
 
+        [HttpGet]
+        public ActionResult Appeal(string query = "")
+        {
+            ViewBag.Message = TempData["Message"] as string;
+            ViewBag.IsError = TempData["IsError"] as bool? ?? false;
 
+            // Truyền Query nếu có từ trang Result
+            return View(new AppealViewModel { Query = query });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SubmitAppeal(AppealViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // KHI KHÔNG HỢP LỆ (Không có Redirect, dùng ViewBag)
+                ViewBag.Message = "Vui lòng kiểm tra lại thông tin nhập vào.";
+                ViewBag.IsError = true;
+                return View("Appeal", model);
+            }
+
+            var (success, message) = await _service.SubmitAppealAsync(
+                model.Query, model.AppellantName, model.AppellantEmail, model.Reason
+            );
+
+            // KHI THÀNH CÔNG/LỖI NGHIỆP VỤ (Có Redirect, dùng TempData)
+            TempData["Message"] = message;
+            TempData["IsError"] = !success;
+
+            return RedirectToAction("Appeal");
+        }
 
 
         public IActionResult News()
@@ -130,13 +152,7 @@ namespace ProjectEXE01.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult Report()
-        {
-            ViewBag.Success = TempData["Success"] as string;
-            ViewBag.Error = TempData["Error"] as string;
-            return View(new ReportViewModel());
-        }
+        
         public IActionResult History()
         {
             return View();

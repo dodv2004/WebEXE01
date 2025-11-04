@@ -1,0 +1,67 @@
+﻿@page
+@model WebAdmin.Pages.Appeals.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Appeal</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Appeal.Query" class="control-label"></label>
+                <input asp-for="Appeal.Query" class="form-control" />
+                <span asp-validation-for="Appeal.Query" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Appeal.AppellantName" class="control-label"></label>
+                <input asp-for="Appeal.AppellantName" class="form-control" />
+                <span asp-validation-for="Appeal.AppellantName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Appeal.AppellantEmail" class="control-label"></label>
+                <input asp-for="Appeal.AppellantEmail" class="form-control" />
+                <span asp-validation-for="Appeal.AppellantEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Appeal.Reason" class="control-label"></label>
+                <input asp-for="Appeal.Reason" class="form-control" />
+                <span asp-validation-for="Appeal.Reason" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Appeal.SubmittedAt" class="control-label"></label>
+                <input asp-for="Appeal.SubmittedAt" class="form-control" />
+                <span asp-validation-for="Appeal.SubmittedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Appeal.Status" class="control-label"></label>
+                <input asp-for="Appeal.Status" class="form-control" />
+                <span asp-validation-for="Appeal.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Appeal.ReportCheckId" class="control-label"></label>
+                <select asp-for="Appeal.ReportCheckId" class ="form-control" asp-items="ViewBag.ReportCheckId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

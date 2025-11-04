@@ -1,82 +1,89 @@
 ﻿@model DAL.Models.ReportViewModel
 @{
-    ViewData["Title"] = "Báo cáo lừa đảo";
+    // Sử dụng ViewBag.Message và ViewBag.IsError đã được thiết lập trong HomeController
+    ViewData["Title"] = "Gửi Báo cáo Lừa đảo";
 }
 
 <div class="container py-5">
-    <h2 class="text-center mb-4 text-danger fw-bold">Gửi báo cáo chống lừa đảo</h2>
+    <h2 class="text-center mb-4 text-danger fw-bold">⚠️ Gửi Báo cáo Chống Lừa đảo</h2>
 
     <div class="card shadow p-4">
-        @if (ViewBag.Success != null)
+
+        @* Logic hiển thị thông báo đã được tối ưu *@
+        @if (ViewBag.Message != null)
         {
-            <div class="alert alert-success">
-                @ViewBag.Success
+            var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-success";
+
+            <div class="alert @alertClass" role="alert">
+                @ViewBag.Message
             </div>
         }
-        @if (ViewBag.Error != null)
-        {
-            <div class="alert alert-danger">
-                @ViewBag.Error
-            </div>
-        }
+        @* Hết logic hiển thị thông báo đã được tối ưu *@
 
-        <form method="post" action="@Url.Action("SubmitReport", "Home")" class="form-horizontal">
-            @Html.AntiForgeryToken()
+        @* SỬ DỤNG TAG HELPERS CHUẨN ASP.NET CORE MVC *@
+        <form asp-controller="Home" asp-action="SubmitReport" method="post" class="form-horizontal">
+            @* Dòng này tương đương với @Html.AntiForgeryToken() *@
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="form-group mb-3">
-                <label asp-for="Query" class="control-label col-md-2"></label>
-                <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.Query, new { @class = "form-control", placeholder = "Nhập số điện thoại, STK hoặc link" })
-                    @Html.ValidationMessageFor(m => m.Query, "", new { @class = "text-danger" })
+                <label asp-for="Query" class="control-label fw-bold"></label>
+                <div>
+                    <input asp-for="Query" class="form-control" placeholder="Nhập số điện thoại, STK hoặc link">
+                    <span asp-validation-for="Query" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Type" class="control-label col-md-2"></label>
-                <div class="col-md-10">
-                    @Html.DropDownListFor(m => m.Type, new SelectList(new[]
-                    {
-                        new { Value = "phone", Text = "Số điện thoại" },
-                                        new { Value = "bank", Text = "Tài khoản ngân hàng" },
-                                        new { Value = "link", Text = "Link" }
-                                        }, "Value", "Text"), "Chọn loại", new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Type, "", new { @class = "text-danger" })
+                <label asp-for="Type" class="control-label fw-bold"></label>
+                <div>
+                    @* Sử dụng <select> với Tag Helper cho DropDownList *@
+                    <select asp-for="Type" class="form-control">
+                        <option value="">Chọn loại báo cáo</option>
+                        <option value="phone">Số điện thoại</option>
+                        <option value="bank">Tài khoản ngân hàng</option>
+                        <option value="link">Link/Website</option>
+                    </select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Note" class="control-label col-md-2"></label>
-                <div class="col-md-10">
-                    @Html.TextAreaFor(m => m.Note, new { @class = "form-control", placeholder = "Ghi chú (tùy chọn)" })
-                    @Html.ValidationMessageFor(m => m.Note, "", new { @class = "text-danger" })
+                <label asp-for="Note" class="control-label"></label>
+                <div>
+                    <textarea asp-for="Note" class="form-control" placeholder="Mô tả chi tiết về hành vi lừa đảo (tùy chọn)"></textarea>
+                    <span asp-validation-for="Note" class="text-danger"></span>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-group mb-3">
+                <label asp-for="ReporterName" class="control-label fw-bold"></label>
+                <div>
+                    <input asp-for="ReporterName" class="form-control" placeholder="Tên của bạn">
+                    <span asp-validation-for="ReporterName" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="ReporterName" class="control-label col-md-2"></label>
-                <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.ReporterName, new { @class = "form-control", placeholder = "Tên của bạn" })
-                    @Html.ValidationMessageFor(m => m.ReporterName, "", new { @class = "text-danger" })
+                <label asp-for="ReporterEmail" class="control-label fw-bold"></label>
+                <div>
+                   
+                    <input asp-for="ReporterEmail" class="form-control" type="text" placeholder="Email của bạn">
+                    <span asp-validation-for="ReporterEmail" class="text-danger"></span>
                 </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="ReporterEmail" class="control-label col-md-2"></label>
-                <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.ReporterEmail, new { @class = "form-control", placeholder = "Email của bạn" })
-                    @Html.ValidationMessageFor(m => m.ReporterEmail, "", new { @class = "text-danger" })
-                </div>
+                <small class="form-text text-muted">Email này sẽ được dùng để xác định bạn là người báo cáo duy nhất cho mục này.</small>
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-danger btn-lg">Gửi báo cáo</button>
+                <button type="submit" class="btn btn-danger btn-lg fw-bold">Gửi báo cáo</button>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
-    <script src="~/Scripts/jquery.validate.min.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -22,6 +22,47 @@ namespace DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DAL.Models.Appeal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppellantEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AppellantName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Query")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ReportCheckId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportCheckId");
+
+                    b.ToTable("Appeals");
+                });
+
             modelBuilder.Entity("DAL.Models.ReportCheck", b =>
                 {
                     b.Property<int>("Id")
@@ -96,6 +137,15 @@ namespace DAL.Migrations
                     b.ToTable("ReporterReportChecks");
                 });
 
+            modelBuilder.Entity("DAL.Models.Appeal", b =>
+                {
+                    b.HasOne("DAL.Models.ReportCheck", "ReportCheck")
+                        .WithMany("Appeals")
+                        .HasForeignKey("ReportCheckId");
+
+                    b.Navigation("ReportCheck");
+                });
+
             modelBuilder.Entity("DAL.Models.ReporterReportCheck", b =>
                 {
                     b.HasOne("DAL.Models.ReportCheck", "ReportCheck")
@@ -117,6 +167,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Models.ReportCheck", b =>
                 {
+                    b.Navigation("Appeals");
+
                     b.Navigation("ReporterReportChecks");
                 });
 

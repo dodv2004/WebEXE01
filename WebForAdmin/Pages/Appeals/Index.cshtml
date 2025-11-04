@@ -1,0 +1,72 @@
+﻿@page
+@model WebForAdmin.Pages.Appeals.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].Query)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].AppellantName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].AppellantEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].Reason)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].SubmittedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appeal[0].ReportCheck)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Appeal) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Query)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppellantName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppellantEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reason)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubmittedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReportCheck.Query)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,5 +1,87 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model DAL.Models.AppealViewModel
 @{
+    // Sử dụng ViewBag.Message và ViewBag.IsError đã được thiết lập trong HomeController
+    ViewData["Title"] = "Gửi Yêu cầu Khiếu nại";
+}
+
+<div class="container py-5">
+    @* Thay đổi màu tiêu đề thành primary (xanh dương) *@
+    <h2 class="text-center mb-4 text-primary fw-bold">🛡️ Gửi Yêu cầu Khiếu nại Báo cáo</h2>
+
+    <div class="card shadow p-4">
+
+        @* Logic hiển thị thông báo đã được tối ưu *@
+        @if (ViewBag.Message != null)
+        {
+            var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-success";
+
+            <div class="alert @alertClass" role="alert">
+                @ViewBag.Message
+            </div>
+        }
+        @* Hết logic hiển thị thông báo đã được tối ưu *@
+
+        @* SỬ DỤNG TAG HELPERS CHUẨN ASP.NET CORE MVC *@
+        @* Đảm bảo Controller/Action đúng cho chức năng Khiếu nại *@
+        <form asp-controller="Home" asp-action="SubmitAppeal" method="post" class="form-horizontal" >
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <p class="text-muted mb-4">
+                Vui lòng điền thông tin chi tiết để chúng tôi có thể xem xét và xác minh lại báo cáo.
+            </p>
+
+            <div class="form-group mb-3">
+                @* Dùng Query từ AppealViewModel *@
+                <label asp-for="Query" class="control-label fw-bold"></label>
+                <div>
+                    <input asp-for="Query" class="form-control" placeholder="Nhập số điện thoại, STK hoặc link bị báo cáo sai">
+                    <span asp-validation-for="Query" class="text-danger"></span>
+                </div>
+                <small class="form-text text-muted">Mục này phải trùng khớp với mục đã bị báo cáo trên hệ thống.</small>
+            </div>
+
+            <hr />
+
+            <div class="form-group mb-3">
+                @* Dùng Reason từ AppealViewModel *@
+                <label asp-for="Reason" class="control-label fw-bold"></label>
+                <div>
+                    <textarea asp-for="Reason" class="form-control" rows="5" placeholder="Nêu rõ lý do khiếu nại và cung cấp bằng chứng (nếu có)."></textarea>
+                    <span asp-validation-for="Reason" class="text-danger"></span>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-group mb-3">
+                @* Dùng AppellantName từ AppealViewModel *@
+                <label asp-for="AppellantName" class="control-label fw-bold"></label>
+                <div>
+                    <input asp-for="AppellantName" class="form-control" placeholder="Tên người khiếu nại">
+                    <span asp-validation-for="AppellantName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="AppellantEmail" class="control-label fw-bold"></label>
+                <div>
+                  
+                    <input asp-for="AppellantEmail" class="form-control" type="text" placeholder="Email của bạn">
+                    <span asp-validation-for="AppellantEmail" class="text-danger"></span>
+                </div>
+                <small class="form-text text-muted">Chúng tôi sẽ dùng email này để thông báo kết quả xử lý khiếu nại.</small>
+            </div>
+
+            <div class="text-center mt-4">
+                @* Đổi màu nút sang primary (xanh dương) *@
+                <button type="submit" class="btn btn-primary btn-lg fw-bold">Gửi Yêu cầu Khiếu nại</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

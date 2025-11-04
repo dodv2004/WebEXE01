@@ -1,0 +1,117 @@
+﻿@page
+@model WebAdmin.Pages.Appeals.IndexModel
+
+@{
+    ViewData["Title"] = "Xử lí khiếu nại";
+}
+
+<h1 class="text-primary"><i class="fas fa-gavel me-2"></i> Xử lý Yêu cầu Khiếu nại</h1>
+
+@* Hiển thị thông báo (StatusMessage) *@
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    var alertClass = Model.StatusMessage.StartsWith("Success") ? "alert-success" : "alert-danger";
+    <div class="alert @alertClass" role="alert">
+        @Model.StatusMessage.Replace("Success: ", "").Replace("Error: ", "")
+    </div>
+}
+
+<div class="card shadow p-3">
+    @* Xóa nút Create New, thay bằng thống kê đơn giản *@
+    @if (Model.AppealList.Any())
+    {
+        <p>Tìm thấy <strong class="text-danger">@Model.AppealList.Count</strong> yêu cầu đang chờ xử lý.</p>
+    }
+
+    <table class="table table-striped table-hover mt-2">
+        <thead>
+            <tr>
+                <th style="width:5%;">ID</th>
+                <th style="width:15%;">Query Bị Khiếu nại</th>
+                <th style="width:15%;">Người Khiếu nại</th>
+                <th style="width:30%;">Lý do</th>
+                <th style="width:10%;">Ngày Gửi</th>
+                <th style="width:10%;">Trạng thái</th>
+                <th style="width:15%;">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.AppealList.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle me-2 text-success"></i>
+                        Không có yêu cầu khiếu nại nào đang chờ xử lý.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.AppealList)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>
+                            <strong class="text-primary">@item.Query</strong>
+                            @if (item.ReportCheck != null)
+                            {
+                                @* Hiển thị ID của ReportCheck liên quan *@
+                                <span class="badge bg-secondary ms-1">RC ID: @item.ReportCheckId</span>
+                            }
+                        </td>
+                        <td>
+                            @item.AppellantName <br />
+                            <small class="text-muted">@item.AppellantEmail</small>
+                        </td>
+                        <td>
+                            @* Hiển thị Reason rõ ràng hơn *@
+                            <div style="max-height: 80px; overflow: auto; border: 1px solid #eee; padding: 5px; background-color:#f9f9f9">
+                                @item.Reason
+                            </div>
+                        </td>
+                        <td>@item.SubmittedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            @{
+                                var badgeClass = item.Status == "Pending" ? "bg-warning" : item.Status == "Accepted" ? "bg-success" : "bg-danger";
+                            }
+                            <span class="badge @badgeClass">@item.Status</span>
+                        </td>
+                        <td>
+                            @* Nút Hành động chỉ hiển thị khi Status là Pending *@
+                            @if (item.Status == "Pending")
+                            {
+                                <div class="d-grid gap-1">
+                                    @* Form Chấp nhận - Gọi OnPostAccept *@
+                                    <form method="post" asp-page-handler="Accept">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success w-100"
+                                                onclick="return confirm('XÁC NHẬN CHẤP NHẬN khiếu nại (Gỡ trạng thái lừa đảo)?');">
+                                            <i class="fas fa-check"></i> Chấp nhận
+                                        </button>
+                                    </form>
+
+                                    @* Form Từ chối - Gọi OnPostReject *@
+                                    <form method="post" asp-page-handler="Reject">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                                                onclick="return confirm('XÁC NHẬN TỪ CHỐI khiếu nại (Giữ trạng thái báo cáo)?');">
+                                            <i class="fas fa-times"></i> Từ chối
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-success small">Đã xử lý</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    @* Các script cần thiết *@
+}

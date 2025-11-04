@@ -1,8 +1,7 @@
 ﻿@{
-    ViewBag.Title = "Trang chủ";
+    ViewBag.Title = "Trang chủ - Cùng nhau chống lại lừa đảo trực tuyến";
 }
 
-<!-- Hero Section -->
 <section class="hero-section text-center py-5" style="background: linear-gradient(135deg, #111, #222);">
     <div class="container">
         <h1 class="display-4 fw-bold text-light mb-3">
@@ -12,7 +11,20 @@
             Kiểm tra nhanh số điện thoại, tài khoản ngân hàng hoặc đường link đáng ngờ để bảo vệ bạn và cộng đồng.
         </p>
 
-        <form asp-action="Check" method="post" class="search-form mx-auto">
+        @* ========================================================== *@
+        @* LOGIC HIỂN THỊ THÔNG BÁO TỪ CONTROLLER ĐÃ TỐI ƯU *@
+        @* ========================================================== *@
+        @if (ViewBag.Message != null)
+        {
+            // Kiểm tra ViewBag.IsError để quyết định class CSS (danger/success/info)
+            var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-info";
+
+            <div class="alert @alertClass w-75 mx-auto" role="alert">
+                @ViewBag.Message
+            </div>
+        }
+
+        <form asp-controller="Home" asp-action="Check" method="post" class="search-form mx-auto">
             <div class="input-group input-group-lg shadow">
                 <input type="text" name="query" class="form-control border-0" placeholder="Nhập số điện thoại, STK, link cần kiểm tra..." required>
                 <button class="btn btn-danger fw-bold px-4" type="submit">Kiểm tra ngay</button>
@@ -25,7 +37,6 @@
     </div>
 </section>
 
-<!-- Thông tin giới thiệu -->
 <section class="py-5 bg-light">
     <div class="container">
         <div class="row text-center">
@@ -34,7 +45,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold text-danger">⚠️ Cảnh báo mới nhất</h5>
                         <p class="text-muted">Cập nhật liên tục các chiêu trò lừa đảo mới để bạn luôn cảnh giác và an toàn khi giao dịch trực tuyến.</p>
-                        <a href="@Url.Action("News", "Home")" class="btn btn-outline-danger btn-sm">Xem tin tức</a>
+                        <a asp-controller="Home" asp-action="News" class="btn btn-outline-danger btn-sm">Xem tin tức</a>
                     </div>
                 </div>
             </div>
@@ -44,7 +55,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold text-primary">📚 Tài nguyên & Hướng dẫn</h5>
                         <p class="text-muted">Tìm hiểu cách nhận diện lừa đảo, bảo mật thông tin cá nhân và xử lý khi bị lừa đảo.</p>
-                        <a href="@Url.Action("Resources", "Home")" class="btn btn-outline-primary btn-sm">Xem tài nguyên</a>
+                        <a asp-controller="Home" asp-action="Resources" class="btn btn-outline-primary btn-sm">Xem tài nguyên</a>
                     </div>
                 </div>
             </div>
@@ -54,19 +65,24 @@
                     <div class="card-body">
                         <h5 class="fw-bold text-success">🏆 Cộng đồng cảnh giác</h5>
                         <p class="text-muted">Xem bảng xếp hạng những người đóng góp tích cực nhất trong việc báo cáo và chia sẻ thông tin lừa đảo.</p>
-                        <a href="@Url.Action("Ranking", "Home")" class="btn btn-outline-success btn-sm">Xem bảng xếp hạng</a>
+                        <a asp-controller="Home" asp-action="Ranking" class="btn btn-outline-success btn-sm">Xem bảng xếp hạng</a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Home" asp-action="Report" class="btn btn-lg btn-warning fw-bold shadow-lg">
+                Gửi Báo Cáo Lừa Đảo Ngay!
+            </a>
+        </div>
     </div>
 </section>
 
-<!-- Truyền thông -->
 <section class="py-5 bg-dark text-light">
     <div class="container text-center">
         <h2 class="fw-bold mb-3">📢 Truyền thông nói gì về chúng tôi</h2>
         <p class="mb-4 opacity-75">Các bài viết, video và chuyên mục từ báo chí, truyền hình và cộng đồng mạng về chiến dịch “Chống Lừa Đảo Việt Nam”.</p>
-        <a href="@Url.Action("Media", "Home")" class="btn btn-outline-light btn-lg">Khám phá thêm</a>
+        <a asp-controller="Home" asp-action="Media" class="btn btn-outline-light btn-lg">Khám phá thêm</a>
     </div>
 </section>

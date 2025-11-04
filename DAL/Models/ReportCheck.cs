@@ -20,5 +20,8 @@ namespace DAL.Models
 
         // Quan hệ N-N với Reporter
         public ICollection<ReporterReportCheck> ReporterReportChecks { get; set; }
+        // Quan hệ 1-N với Appeal
+        public ICollection<Appeal> Appeals { get; set; } = new List<Appeal>();
     }
 }
+

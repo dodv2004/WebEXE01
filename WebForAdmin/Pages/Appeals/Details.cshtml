@@ -1,0 +1,61 @@
+﻿@page
+@model WebForAdmin.Pages.Appeals.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Appeal</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.Query)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.Query)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.AppellantName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.AppellantName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.AppellantEmail)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.AppellantEmail)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.Reason)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.Reason)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.SubmittedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.SubmittedAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appeal.ReportCheck)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Appeal.ReportCheck.Query)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Appeal.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

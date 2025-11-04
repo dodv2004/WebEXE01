@@ -14,11 +14,15 @@ namespace DAL.Data
         public DbSet<Reporter> Reporters { get; set; }
         public DbSet<ReporterReportCheck> ReporterReportChecks { get; set; }
 
+        public DbSet<Appeal> Appeals { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Cấu hình khóa chính kép cho bảng trung gian
+            // ----------------------------------------------------------
+            // 1. Cấu hình quan hệ N-N (Reporter <-> ReportCheck)
+            // ----------------------------------------------------------
             modelBuilder.Entity<ReporterReportCheck>()
                 .HasKey(rr => new { rr.ReporterId, rr.ReportCheckId });
 
@@ -31,6 +35,25 @@ namespace DAL.Data
                 .HasOne(rr => rr.ReportCheck)
                 .WithMany(rc => rc.ReporterReportChecks)
                 .HasForeignKey(rr => rr.ReportCheckId);
+
+            // ----------------------------------------------------------
+            // 2. Cấu hình quan hệ 1-N (ReportCheck <-> Appeal)
+            // ----------------------------------------------------------
+            modelBuilder.Entity<Appeal>()
+                .HasOne(a => a.ReportCheck)             // Một Appeal liên quan đến một ReportCheck
+                .WithMany(rc => rc.Appeals)             // Một ReportCheck có nhiều Appeals
+                .HasForeignKey(a => a.ReportCheckId)    // Khóa ngoại là ReportCheckId
+                .IsRequired(false);                     // Cho phép ReportCheckId là NULL (nếu Query không tồn tại)
+
+            // Cấu hình Query trong ReportCheck và Appeal là không phân biệt chữ hoa/thường 
+            // nếu bạn dùng SQL Server hoặc PostgreSQL
+            modelBuilder.Entity<ReportCheck>()
+                .Property(rc => rc.Query)
+                .IsRequired();
+
+            modelBuilder.Entity<Appeal>()
+                .Property(a => a.Query)
+                .IsRequired();
         }
     }
 }
