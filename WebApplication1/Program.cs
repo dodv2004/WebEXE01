@@ -1,30 +1,39 @@
-using BLL.Services;
+﻿using BLL.Services;
 using DAL.Data;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ??ng k� d?ch v? Database (DbContext)
+// --- 1. ĐĂNG KÝ DỊCH VỤ (SERVICES) ---
+builder.Services.AddControllersWithViews(); // Cho MVC (User UI)
+builder.Services.AddRazorPages();           // Cho Razor Pages (Admin Area)
+
+// Kết nối database
 builder.Services.AddDbContext<ProjectEXE01Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectEXE01Context")));
 
-// ??ng k� DI (Dependency Injection) cho BLL v� DAL
+// Đăng ký Dependency Injection (DI)
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
-// ??ng k� d?ch v? cho c? MVC (Controller/View) v� Razor Pages (Admin Area)
-builder.Services.AddControllersWithViews(); // C?n thi?t cho HomeController
-builder.Services.AddRazorPages();          // C?n thi?t cho Admin Area
+// BẮT BUỘC: Để BLL truy cập được Session người dùng
+builder.Services.AddHttpContextAccessor();
 
+// Cấu hình Session (BẮT BUỘC cho hệ thống Login của bạn)
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- 2. CẤU HÌNH PIPELINE (MIDDLEWARE) ---
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Home/Error"); // Chuyển hướng lỗi về MVC Home
     app.UseHsts();
 }
 
@@ -35,6 +44,17 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+// BẮT BUỘC: Phải đặt UseSession sau UseRouting và trước Map
+app.UseSession();
+
+// --- 3. ĐIỀU HƯỚNG (MAPPING) ---
+
+// Map cho Controller (Trang chủ, Tra cứu, Login...)
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map cho Razor Pages (Trang Admin)
 app.MapRazorPages();
 
 app.Run();

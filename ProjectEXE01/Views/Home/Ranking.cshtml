@@ -1,0 +1,106 @@
+﻿@model IEnumerable<DAL.Models.ReporterRankingDto>
+@{
+    ViewBag.Title = "Bảng xếp hạng Hiệp sĩ AntiScam";
+    int rank = 1;
+}
+
+<section class="py-5" style="background: var(--dark-bg); min-height: 100vh;">
+    <div class="container">
+        <div class="text-center mb-5 animate__animated animate__fadeIn">
+            <h1 class="display-4 fw-bold text-light">Bảng Xếp Hạng <span class="text-warning">Hiệp Sĩ</span></h1>
+            <p class="text-white-50 small">Vinh danh những thành viên tích cực nhất trong việc báo cáo lừa đảo năm 2026.</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg text-light rounded-4 overflow-hidden" style="background: var(--card-bg);">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead class="bg-dark shadow-sm">
+                                <tr class="text-uppercase small opacity-75">
+                                    <th class="py-3 ps-4" style="width: 100px;">Hạng</th>
+                                    <th class="py-3">Thành viên</th>
+                                    <th class="py-3 text-center">Số báo cáo</th>
+                                    <th class="py-3 text-end pe-4">Danh hiệu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold fs-5">
+                                            @if (rank == 1)
+                                            {
+                                                <span class="text-warning"><i class="fas fa-medal"></i> 1</span>
+                                            }
+                                            else if (rank == 2)
+                                            {
+
+                                                <span class="text-secondary"><i class="fas fa-medal"></i> 2</span>
+                                            }
+                                            else if (rank == 3)
+                                            {
+
+                                                <span class="text-bronze"><i class="fas fa-medal"></i> 3</span>
+                                            }
+                                            else
+                                            {
+
+                                                <span>@rank</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-white">@item.Name</div>
+                                            <div class="small text-white-50">@item.MaskedEmail</div>
+                                        </td>
+                                        <td class="text-center fw-bold text-warning">@item.TotalReports</td>
+                                        <td class="text-end pe-4">
+                                            @if (rank == 1)
+                                            {
+                                                <span class="badge bg-danger">Huyền Thoại</span>
+                                            }
+                                            else if (rank <= 3)
+                                            {
+
+                                                <span class="badge bg-primary">Chuyên Gia</span>
+                                            }
+                                            else
+                                            {
+
+                                                <span class="badge bg-dark border border-secondary">Thành Viên</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    rank++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <p class="text-white-50 italic">"Mỗi báo cáo của bạn góp phần làm Internet an toàn hơn."</p>
+                    <a asp-action="Report" class="btn btn-outline-warning rounded-pill px-4 fw-bold">
+                        <i class="fas fa-flag me-2"></i>Tôi muốn đóng góp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .text-bronze {
+        color: #cd7f32;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .badge {
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+</style>

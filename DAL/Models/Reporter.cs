@@ -12,6 +12,7 @@ namespace DAL.Models
         public string Name { get; set; }
         public string Email { get; set; }
 
+
         // Quan hệ N-N với ReportCheck
         public ICollection<ReporterReportCheck> ReporterReportChecks { get; set; }
     }

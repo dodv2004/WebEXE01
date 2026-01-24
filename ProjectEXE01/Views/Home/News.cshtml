@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "Tin tức Cảnh báo - AntiScam";
+}
+
+<section class="py-5" style="background: var(--dark-bg); min-height: 100vh;">
+    <div class="container">
+        <div class="text-center mb-5 animate__animated animate__fadeIn">
+            <h1 class="display-4 fw-bold text-light">Tin Tức <span class="text-danger">Cảnh Báo</span></h1>
+            <p class="text-white-50">Cập nhật những thủ đoạn lừa đảo mới nhất trong năm 2026 để bảo vệ cộng đồng.</p>
+        </div>
+
+        <div class="row">
+            @* Tin 1: Deepfake 2.0 - Đã cập nhật link ảnh mới *@
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 bg-dark border-secondary text-light shadow-sm news-card">
+                    @* Sử dụng ID ảnh ổn định hơn và thêm ảnh dự phòng *@
+                    <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=500"
+                         class="card-img-top"
+                         alt="Deepfake Scam"
+                         onerror="this.src='https://via.placeholder.com/500x300?text=AntiScam+News'">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-danger">Khẩn cấp</span>
+                            <small class="text-white-50">20/01/2026</small>
+                        </div>
+                        <h5 class="fw-bold text-warning">Bùng nổ Deepfake 2.0 dịp Tết Bính Ngọ</h5>
+                        <p class="small text-white-50">Công nghệ giả mạo video call thế hệ mới có khả năng bắt chước cảm xúc thật, khiến nạn nhân khó lòng phân biệt thật giả.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top border-secondary">
+                        <a href="#" class="btn btn-sm btn-outline-light w-100">Đọc chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            @* Tin 2: VNeID giả mạo *@
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 bg-dark border-secondary text-light shadow-sm news-card">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=500" class="card-img-top" alt="VNeID Fake">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-warning text-dark">Cảnh báo</span>
+                            <small class="text-white-50">18/01/2026</small>
+                        </div>
+                        <h5 class="fw-bold text-primary">Cảnh giác App VNeID "phiên bản 2026" giả mạo</h5>
+                        <p class="small text-white-50">Kẻ xấu giả danh công an yêu cầu cài đặt app lạ để cập nhật dữ liệu, thực chất là mã độc chiếm quyền điều khiển điện thoại.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top border-secondary">
+                        <a href="#" class="btn btn-sm btn-outline-light w-100">Đọc chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            @* Tin 3: AI Romance *@
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 bg-dark border-secondary text-light shadow-sm news-card">
+                    <img src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&q=80&w=500" class="card-img-top" alt="AI Romance">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-info">Xu hướng</span>
+                            <small class="text-white-50">15/01/2026</small>
+                        </div>
+                        <h5 class="fw-bold text-success">"AI Romance" - Chiêu trò lừa tình cảm mới</h5>
+                        <p class="small text-white-50">Tội phạm mạng sử dụng chatbot AI để tạo lập mối quan hệ thân thiết trước khi dẫn dụ đầu tư vào các sàn ảo.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top border-secondary">
+                        <a href="#" class="btn btn-sm btn-outline-light w-100">Đọc chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        @* PHẦN THÔNG TIN THÊM *@
+        <div class="mt-5 p-4 rounded-4 bg-primary bg-opacity-10 border border-primary text-center shadow">
+            <h4 class="fw-bold text-white"><i class="fas fa-chart-bar me-2"></i>Thống kê đáng báo động</h4>
+            <p class="text-white-50 mb-0">Thiệt hại do lừa đảo trực tuyến tại Việt Nam trong năm 2025 đã vượt mốc 6.000 tỷ đồng. Hãy luôn cảnh giác!</p>
+        </div>
+    </div>
+</section>
+
+<style>
+    .news-card {
+        transition: transform 0.3s ease, border-color 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            border-color: #ffc107 !important;
+        }
+
+        .news-card img {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .news-card:hover img {
+            transform: scale(1.1);
+        }
+</style>

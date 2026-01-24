@@ -25,5 +25,18 @@ namespace DAL.Repositories
         Task UpdateAppealStatus(int appealId, string newStatus);
 
         Task SaveAsync();
+
+        Task<User?> GetUserByEmailAsync(string email);
+        Task AddUserAsync(User user);
+        Task UpdateUserAsync(User user);
+
+        // Thêm hàm lưu vết giao dịch doanh thu
+        Task AddTransactionAsync(Transaction transaction);
+
+        // Thêm hàm lấy danh sách giao dịch để làm Dashboard Admin
+        Task<IEnumerable<Transaction>> GetAllTransactionsAsync();
+        Task<IEnumerable<ReporterRankingDto>> GetTopReportersAsync(int count);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+
     }
 }

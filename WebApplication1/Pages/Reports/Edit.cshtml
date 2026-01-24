@@ -1,0 +1,56 @@
+﻿@page
+@model WebAdmin.Pages.Reports.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ReportCheck</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ReportCheck.Id" />
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="ReportCheck.Query" class="control-label"></label>
+                <input asp-for="ReportCheck.Query" class="form-control" />
+                <span asp-validation-for="ReportCheck.Query" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReportCheck.Type" class="control-label"></label>
+                <input asp-for="ReportCheck.Type" class="form-control" />
+                <span asp-validation-for="ReportCheck.Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReportCheck.Verdict" class="control-label"></label>
+                <input asp-for="ReportCheck.Verdict" class="form-control" />
+                <span asp-validation-for="ReportCheck.Verdict" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReportCheck.ReportCount" class="control-label"></label>
+                <input asp-for="ReportCheck.ReportCount" class="form-control" />
+                <span asp-validation-for="ReportCheck.ReportCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReportCheck.CheckedAt" class="control-label"></label>
+                <input asp-for="ReportCheck.CheckedAt" class="form-control" />
+                <span asp-validation-for="ReportCheck.CheckedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

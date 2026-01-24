@@ -1,88 +1,204 @@
 ﻿@{
     ViewBag.Title = "Trang chủ - Cùng nhau chống lại lừa đảo trực tuyến";
+    var userEmail = Context.Session.GetString("UserEmail");
 }
 
-<section class="hero-section text-center py-5" style="background: linear-gradient(135deg, #111, #222);">
+<section class="hero-section text-center py-5">
     <div class="container">
-        <h1 class="display-4 fw-bold text-light mb-3">
-            🔒 Cùng nhau chống lại lừa đảo trực tuyến
-        </h1>
-        <p class="lead text-light opacity-75 mb-4">
+        @if (userEmail != null)
+        {
+            bool isVip = ViewBag.IsVip ?? false;
+            <div class="mb-3 animate__animated animate__fadeIn">
+                @if (isVip)
+                {
+                    @* Badge dành riêng cho VIP với màu Vàng Gold *@
+                    <span class="badge bg-danger text-white rounded-pill px-3 py-2 shadow-lg border border-warning">
+                        <i class="fas fa-crown text-warning me-1"></i> THÀNH VIÊN VIP: @userEmail
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2 shadow">
+                        <i class="fas fa-user me-1"></i> Chào mừng, @userEmail
+                    </span>
+                }
+            </div>
+        }
+
+        <div class="icon-emoji">🔒</div>
+        <h1 class="display-4 fw-bold text-light mb-3">Cùng nhau chống lại lừa đảo trực tuyến</h1>
+        <p class="lead text-light opacity-75 mb-4" style="max-width: 700px; margin: 0 auto;">
             Kiểm tra nhanh số điện thoại, tài khoản ngân hàng hoặc đường link đáng ngờ để bảo vệ bạn và cộng đồng.
         </p>
 
-        @* ========================================================== *@
-        @* LOGIC HIỂN THỊ THÔNG BÁO TỪ CONTROLLER ĐÃ TỐI ƯU *@
-        @* ========================================================== *@
+        @* Hiển thị thông báo hệ thống *@
         @if (ViewBag.Message != null)
         {
-            // Kiểm tra ViewBag.IsError để quyết định class CSS (danger/success/info)
             var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-info";
-
-            <div class="alert @alertClass w-75 mx-auto" role="alert">
+            <div class="alert @alertClass w-75 mx-auto shadow" role="alert">
+                <i class="fas @(ViewBag.IsError == true ? "fa-exclamation-circle" : "fa-info-circle") me-2"></i>
                 @ViewBag.Message
             </div>
         }
 
-        <form asp-controller="Home" asp-action="Check" method="post" class="search-form mx-auto">
-            <div class="input-group input-group-lg shadow">
-                <input type="text" name="query" class="form-control border-0" placeholder="Nhập số điện thoại, STK, link cần kiểm tra..." required>
-                <button class="btn btn-danger fw-bold px-4" type="submit">Kiểm tra ngay</button>
-            </div>
-        </form>
+        <div class="search-container mx-auto" style="max-width: 700px; position: relative; z-index: 2;">
+            @if (userEmail == null)
+            {
+                <div class="alert alert-warning border-0 shadow-lg mb-3 animate__animated animate__pulse animate__infinite">
+                    <i class="fas fa-lock me-2"></i>
+                    <strong>Yêu cầu bảo mật:</strong> Vui lòng <a asp-controller="Account" asp-action="Login" class="text-danger fw-bold">Đăng nhập</a> để sử dụng tính năng tra cứu.
+                </div>
+            }
 
-        <p class="mt-3 text-light opacity-75 small">
-            Dữ liệu được tổng hợp từ cộng đồng người dùng và các nguồn uy tín về an toàn mạng.
+            <form asp-controller="Home" asp-action="Check" method="post" class="search-form">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="query" class="form-control border-0 shadow-none"
+                           placeholder="Nhập số điện thoại, STK, link..." required
+                           @(userEmail == null ? "disabled" : "")>
+                    <button class="btn btn-danger fw-bold px-4" type="submit" @(userEmail == null ? "disabled" : "")>
+                        <i class="fas fa-search me-2"></i>Kiểm tra ngay
+                    </button>
+                </div>
+            </form>
+
+            @if (userEmail != null)
+            {
+                bool isVip = ViewBag.IsVip ?? false;
+                int remaining = ViewBag.RemainingSearches ?? 0;
+
+                <p class="mt-3 text-light opacity-75 small">
+                    @if (isVip)
+                    {
+                        <span class="text-warning fw-bold">
+                            <i class="fas fa-infinity me-1"></i> Bạn là VIP: Tra cứu không giới hạn trong tháng @DateTime.Now.Month
+                        </span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-check-circle text-success me-1"></i>
+                        <span>Tài khoản của bạn còn <strong class="text-warning">@remaining</strong> lượt tra cứu miễn phí.</span>
+                        <a asp-controller="Account" asp-action="UpgradeVip" class="text-info ms-2 text-decoration-none small">Nâng cấp ngay?</a>
+                    }
+                </p>
+            }
+        </div>
+
+        <p class="mt-4 text-light opacity-75 small" style="position: relative; z-index: 1;">
+            <i class="fas fa-database me-2"></i> Dữ liệu được tổng hợp từ cộng đồng người dùng và các nguồn uy tín.
         </p>
     </div>
 </section>
 
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="row text-center">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold mb-3">
+                    <i class="fas fa-shield-alt text-danger me-2"></i>
+                    Dịch vụ của chúng tôi
+                </h2>
+                <p class="text-muted">Công cụ và tài nguyên để bảo vệ bạn khỏi lừa đảo trực tuyến</p>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="fw-bold text-danger">⚠️ Cảnh báo mới nhất</h5>
+                <div class="card border-0 shadow-sm feature-card">
+                    <div class="card-body text-center">
+                        <div class="icon-emoji" style="animation-delay: 0s;">⚠️</div>
+                        <h5 class="fw-bold text-danger">Cảnh báo mới nhất</h5>
                         <p class="text-muted">Cập nhật liên tục các chiêu trò lừa đảo mới để bạn luôn cảnh giác và an toàn khi giao dịch trực tuyến.</p>
-                        <a asp-controller="Home" asp-action="News" class="btn btn-outline-danger btn-sm">Xem tin tức</a>
+                        <a asp-controller="Home" asp-action="News" class="btn btn-outline-danger">
+                            <i class="fas fa-arrow-right me-2"></i>Xem tin tức
+                        </a>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="fw-bold text-primary">📚 Tài nguyên & Hướng dẫn</h5>
+                <div class="card border-0 shadow-sm feature-card">
+                    <div class="card-body text-center">
+                        <div class="icon-emoji" style="animation-delay: 0.2s;">📚</div>
+                        <h5 class="fw-bold text-primary">Tài nguyên & Hướng dẫn</h5>
                         <p class="text-muted">Tìm hiểu cách nhận diện lừa đảo, bảo mật thông tin cá nhân và xử lý khi bị lừa đảo.</p>
-                        <a asp-controller="Home" asp-action="Resources" class="btn btn-outline-primary btn-sm">Xem tài nguyên</a>
+                        <a asp-controller="Home" asp-action="Resources" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Xem tài nguyên
+                        </a>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="fw-bold text-success">🏆 Cộng đồng cảnh giác</h5>
+                <div class="card border-0 shadow-sm feature-card">
+                    <div class="card-body text-center">
+                        <div class="icon-emoji" style="animation-delay: 0.4s;">🏆</div>
+                        <h5 class="fw-bold text-success">Cộng đồng cảnh giác</h5>
                         <p class="text-muted">Xem bảng xếp hạng những người đóng góp tích cực nhất trong việc báo cáo và chia sẻ thông tin lừa đảo.</p>
-                        <a asp-controller="Home" asp-action="Ranking" class="btn btn-outline-success btn-sm">Xem bảng xếp hạng</a>
+                        <a asp-controller="Home" asp-action="Ranking" class="btn btn-outline-success">
+                            <i class="fas fa-arrow-right me-2"></i>Xem bảng xếp hạng
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="text-center mt-4">
-            <a asp-controller="Home" asp-action="Report" class="btn btn-lg btn-warning fw-bold shadow-lg">
-                Gửi Báo Cáo Lừa Đảo Ngay!
+        <div class="text-center mt-5">
+            <a asp-controller="Home" asp-action="Report" class="btn btn-lg btn-warning fw-bold btn-report-main">
+                <i class="fas fa-flag me-2"></i>Gửi Báo Cáo Lừa Đảo Ngay!
             </a>
+            <p class="mt-3 text-muted small">
+                <i class="fas fa-users me-2"></i>
+                Hàng nghìn người đã đóng góp để làm internet an toàn hơn
+            </p>
         </div>
     </div>
 </section>
 
-<section class="py-5 bg-dark text-light">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-3">📢 Truyền thông nói gì về chúng tôi</h2>
-        <p class="mb-4 opacity-75">Các bài viết, video và chuyên mục từ báo chí, truyền hình và cộng đồng mạng về chiến dịch “Chống Lừa Đảo Việt Nam”.</p>
-        <a asp-controller="Home" asp-action="Media" class="btn btn-outline-light btn-lg">Khám phá thêm</a>
+<section class="py-5 media-section text-light">
+    <div class="container text-center" style="position: relative; z-index: 1;">
+        <div class="icon-emoji" style="color: #ffc107;">📢</div>
+        <h2 class="fw-bold mb-3">Truyền thông nói gì về chúng tôi</h2>
+        <p class="mb-4 opacity-75" style="max-width: 700px; margin: 0 auto 2rem auto;">
+            Các bài viết, video và chuyên mục từ báo chí, truyền hình và cộng đồng mạng về chiến dịch "Chống Lừa Đảo Việt Nam".
+        </p>
+        <a asp-controller="Home" asp-action="Media" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-play-circle me-2"></i>Khám phá thêm
+        </a>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h3 class="fw-bold mb-3">
+                    <i class="fas fa-lightbulb text-warning me-2"></i>
+                    Tại sao nên sử dụng AntiScam?
+                </h3>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Miễn phí 100%</strong> - Không thu phí bất kỳ dịch vụ nào
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Dữ liệu cộng đồng</strong> - Được xác minh bởi hàng nghìn người dùng
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Cập nhật liên tục</strong> - Thông tin mới nhất về các thủ đoạn lừa đảo
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Bảo mật thông tin</strong> - Cam kết bảo vệ dữ liệu người dùng
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6 text-center">
+                <div style="font-size: 8rem; opacity: 0.2;">
+                    <i class="fas fa-shield-alt text-danger"></i>
+                </div>
+            </div>
+        </div>
     </div>
 </section>

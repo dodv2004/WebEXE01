@@ -1,0 +1,157 @@
+﻿@page
+@model WebAdmin.Pages.Reports.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-danger"><i class="fas fa-clipboard-list me-2"></i> Quản lý & Xác minh Báo cáo</h1>
+<p class="lead">Duyệt các báo cáo từ cộng đồng và xác minh trạng thái chính thức.</p>
+
+@* Hiển thị thông báo (StatusMessage) *@
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    var alertClass = Model.StatusMessage.StartsWith("Success") ? "alert-success" : "alert-danger";
+    <div class="alert @alertClass" role="alert">
+        @Model.StatusMessage.Replace("Success: ", "").Replace("Error: ", "")
+    </div>
+}
+
+<div class="card shadow p-3">
+    @if (Model.ReportList.Any())
+    {
+        <p>Tìm thấy <strong class="text-danger">@Model.ReportList.Count(r => r.Verdict.Contains("Chờ xác minh"))</strong> báo cáo đang chờ duyệt.</p>
+    }
+
+    <table class="table table-striped table-hover mt-2 align-middle">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Query (Thông tin)</th>
+                <th style="width: 10%;">Loại</th> @* CỘT LOẠI RIÊNG *@
+                <th style="width: 8%;">Lượt Báo cáo</th>
+                <th style="width: 17%;">Trạng thái hiện tại</th>
+                <th style="width: 30%;">Hành động Admin</th>
+                <th style="width: 10%;"></th> @* Cột Chi tiết *@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ReportList)
+            {
+                // Kiểm tra trạng thái để làm mờ hoặc highlight
+                bool isPending = item.Verdict.Contains("Chờ xác minh");
+                string rowClass = isPending ? "table-warning" : "";
+
+                // Xác định class cho Verdict hiện tại
+                var currentVerdictClass = isPending ? "bg-warning" : item.Verdict.Contains("lừa đảo") ? "bg-danger" : "bg-success";
+
+                <tr class="@rowClass">
+
+                    @* CỘT QUERY CHỈ CÓ QUERY *@
+                    <td><strong class="text-primary">@item.Query</strong></td>
+
+                    @* CỘT LOẠI RIÊNG *@
+                    <td><span class="badge bg-secondary">@item.Type</span></td>
+
+                    <td class="fw-bold text-danger">@item.ReportCount</td>
+
+                    <td>
+                        <span class="badge @currentVerdictClass">
+                            @item.Verdict
+                        </span>
+                    </td>
+
+                    @* CỘT XÁC MINH TRẠNG THÁI *@
+                    <td>
+                        <div class="d-flex flex-column gap-1">
+                            @* FORM XÁC MINH (CHỈ HIỂN THỊ KHI CÓ THỂ DUYỆT) *@
+                            @if (isPending)
+                            {
+                                <form method="post" class="d-flex" asp-page-handler="UpdateVerdict">
+                                    <input type="hidden" name="id" value="@item.Id" />
+
+                                    <select name="verdict" class="form-select form-select-sm me-2" required>
+                                        <option value="">-- Chọn trạng thái --</option>
+                                        <option value="Đã xác minh lừa đảo">LỪA ĐẢO</option>
+                                        <option value="An toàn (Đã được Admin xác minh)">AN TOÀN</option>
+                                    </select>
+
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('XÁC NHẬN duyệt trạng thái này?');">
+                                        Duyệt
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <small class="text-success fw-bold">Đã Admin xác minh.</small>
+                            }
+                        </div>
+                    </td>
+
+                    @* CỘT CHI TIẾT (Lấy lại 10% width) *@
+                    <td>
+                        <button type="button" class="btn btn-sm btn-info w-100" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.Id">
+                            <i class="fas fa-search"></i> Chi tiết
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@* MODAL XEM CHI TIẾT (Detail) *@
+@foreach (var item in Model.ReportList)
+{
+    // Xác định class cho Modal Header
+    var modalHeaderClass = item.Verdict.Contains("lừa đảo") ? "bg-danger" : item.Verdict.Contains("Chờ") ? "bg-warning" : "bg-success";
+
+    <div class="modal fade" id="detailsModal-@item.Id" tabindex="-1" aria-labelledby="detailsModalLabel-@item.Id" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header @modalHeaderClass text-white">
+                    <h5 class="modal-title" id="detailsModalLabel-@item.Id">Chi tiết Báo cáo: @item.Query</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Thông tin chung:</h6>
+                    <ul>
+                        <li><strong>ID Report:</strong> @item.Id</li>
+                        <li><strong>Loại:</strong> @item.Type</li>
+                        <li><strong>Trạng thái:</strong> <span class="badge @modalHeaderClass">@item.Verdict</span></li>
+                        <li><strong>Lượt báo cáo:</strong> <strong class="text-danger">@item.ReportCount</strong></li>
+                        <li><strong>Ngày tạo:</strong> @item.CheckedAt.ToString("dd/MM/yyyy HH:mm")</li>
+                    </ul>
+
+                    <h6>Chi tiết từ người báo cáo (@item.ReporterReportChecks.Count() lượt):</h6>
+                    @if (item.ReporterReportChecks.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var rr in item.ReporterReportChecks.OrderByDescending(r => r.ReportedAt))
+                            {
+                                <li class="list-group-item">
+                                    <strong>Người báo cáo:</strong> @rr.Reporter.Name (<a href="mailto:@rr.Reporter.Email">@rr.Reporter.Email</a>) <br />
+                                    <strong>Thời gian:</strong> @rr.ReportedAt.ToString("HH:mm dd/MM/yyyy") <br />
+                                    <strong>Ghi chú/Lý do:</strong>
+                                    <p class="m-0 text-muted">@rr.Note</p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có ghi chú chi tiết từ người báo cáo.</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @* Scripts *@
+}

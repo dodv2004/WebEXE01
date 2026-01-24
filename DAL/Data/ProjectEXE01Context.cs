@@ -1,6 +1,6 @@
 ﻿using DAL.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
 namespace DAL.Data
 {
     public class ProjectEXE01Context : DbContext
@@ -9,7 +9,8 @@ namespace DAL.Data
             : base(options)
         {
         }
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ReportCheck> ReportChecks { get; set; }
         public DbSet<Reporter> Reporters { get; set; }
         public DbSet<ReporterReportCheck> ReporterReportChecks { get; set; }

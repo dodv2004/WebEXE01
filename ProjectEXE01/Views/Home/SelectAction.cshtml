@@ -2,101 +2,257 @@
     ViewData["Title"] = "Báo cáo hoặc Khiếu nại";
 }
 
-<div class="report-page d-flex flex-column align-items-center justify-content-center text-center py-5 px-3">
-    <div class="intro mb-5">
-        <h1 class="fw-bold text-danger mb-3 animate__animated animate__fadeInDown">🛡️ Chung tay chống lừa đảo</h1>
-        <p class="lead text-secondary animate__animated animate__fadeInUp" style="max-width: 750px; margin: 0 auto;">
-            Khi phát hiện dấu hiệu lừa đảo trên không gian mạng, hãy <strong class="text-danger">báo cáo ngay</strong> cho chúng tôi.<br />
-            Bạn cũng có thể gửi khiếu nại về các đánh giá không chính xác hoặc trường hợp bị đưa vào danh sách chặn mà không rõ lý do.
-            <br /><br />
-            Mỗi báo cáo của bạn đều góp phần tạo nên một môi trường Internet an toàn hơn cho tất cả người dùng.<br />
-            <strong class="text-dark">Chân thành cảm ơn sự đóng góp quý báu của bạn!</strong>
-        </p>
-    </div>
-
-    <div class="row justify-content-center g-4">
-        <!-- Nút Báo cáo -->
-        <div class="col-md-4 col-sm-10">
-            <a href="/Home/Report" class="action-card report-card text-decoration-none d-block p-4 shadow-lg rounded-4">
-                <div class="icon-circle bg-danger bg-gradient text-white mb-3 mx-auto">
-                    <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
-                </div>
-                <h3 class="fw-bold text-danger mb-2">Báo cáo lừa đảo</h3>
-                <p class="text-secondary">
-                    Gửi thông tin về số điện thoại, tài khoản ngân hàng hoặc đường link có dấu hiệu lừa đảo.
-                </p>
-            </a>
-        </div>
-
-        <!-- Nút Khiếu nại -->
-        <div class="col-md-4 col-sm-10">
-            <a href="/Home/Appeal" class="action-card appeal-card text-decoration-none d-block p-4 shadow-lg rounded-4">
-                <div class="icon-circle bg-primary bg-gradient text-white mb-3 mx-auto">
-                    <i class="fa-solid fa-shield-halved fa-2x"></i>
-                </div>
-                <h3 class="fw-bold text-primary mb-2">Gửi khiếu nại</h3>
-                <p class="text-secondary">
-                    Khiếu nại về việc bị báo cáo sai hoặc muốn xác minh lại danh sách chặn.
-                </p>
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Font Awesome -->
-<script src="https://kit.fontawesome.com/a2d9b12345.js" crossorigin="anonymous"></script>
-
 <style>
-    body {
-        background: linear-gradient(135deg, #f9fafc 0%, #eef3ff 100%);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    .select-action-page {
+        min-height: calc(100vh - 200px);
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 4rem 0;
     }
 
-    .report-page {
-        min-height: 100vh;
+    .intro-section {
+        max-width: 900px;
+        margin: 0 auto 4rem auto;
+        text-align: center;
+        animation: fadeInDown 0.8s ease;
+    }
+
+        .intro-section h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #dc3545;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .intro-section .lead {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #495057;
+        }
+
+        .intro-section strong {
+            font-weight: 700;
+        }
+
+    .action-cards-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
     }
 
     .action-card {
-        background-color: white;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
+        background: white;
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 3px solid transparent;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
     }
 
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .action-card:hover::before {
+            opacity: 1;
+        }
+
+    .report-card {
+        box-shadow: 0 5px 20px rgba(220, 53, 69, 0.1);
+    }
+
+        .report-card::before {
+            color: #dc3545;
+        }
+
+        .report-card:hover {
+            transform: translateY(-15px);
+            border-color: #dc3545;
+            box-shadow: 0 20px 40px rgba(220, 53, 69, 0.25);
+        }
+
+    .appeal-card {
+        box-shadow: 0 5px 20px rgba(13, 110, 253, 0.1);
+    }
+
+        .appeal-card::before {
+            color: #0d6efd;
+        }
+
+        .appeal-card:hover {
+            transform: translateY(-15px);
+            border-color: #0d6efd;
+            box-shadow: 0 20px 40px rgba(13, 110, 253, 0.25);
+        }
+
     .icon-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin: 0 auto 2rem auto;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
-    .report-card:hover {
-        transform: translateY(-10px);
-        border-color: #dc3545;
-        box-shadow: 0 15px 35px rgba(220, 53, 69, 0.25);
+    .report-card .icon-circle {
+        background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
     }
 
-    .appeal-card:hover {
-        transform: translateY(-10px);
-        border-color: #0d6efd;
-        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.25);
+    .appeal-card .icon-circle {
+        background: linear-gradient(135deg, #0d6efd 0%, #5dade2 100%);
     }
 
-    .report-card:hover .icon-circle {
-        background: linear-gradient(135deg, #dc3545, #ff6b6b);
+    .action-card:hover .icon-circle {
+        transform: scale(1.1) rotate(5deg);
     }
 
-    .appeal-card:hover .icon-circle {
-        background: linear-gradient(135deg, #0d6efd, #5dade2);
+    .action-card h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
     }
 
-    /* Responsive */
+    .action-card p {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+    .badge-new {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+    }
+
+    @@keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     @@media (max-width: 768px) {
+        .intro-section h1 {
+            font-size: 2rem;
+        }
+
+        .intro-section .lead {
+            font-size: 1rem;
+        }
+
         .action-card {
-            width: 90%;
-            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+        }
+
+        .action-card h3 {
+            font-size: 1.5rem;
         }
     }
 </style>
+
+<div class="select-action-page">
+    <div class="container">
+        <div class="intro-section">
+            <h1>
+                <i class="fas fa-shield-alt me-2"></i>
+                Chung tay chống lừa đảo
+            </h1>
+            <p class="lead">
+                Khi phát hiện dấu hiệu lừa đảo trên không gian mạng, hãy <strong class="text-danger">báo cáo ngay</strong> cho chúng tôi.<br />
+                Bạn cũng có thể gửi khiếu nại về các đánh giá không chính xác hoặc trường hợp bị đưa vào danh sách chặn mà không rõ lý do.
+            </p>
+            <div class="mt-4 p-3 bg-light rounded-3">
+                <p class="mb-0">
+                    <i class="fas fa-heart text-danger me-2"></i>
+                    Mỗi báo cáo của bạn đều góp phần tạo nên một môi trường Internet an toàn hơn cho tất cả người dùng.<br />
+                    <strong class="text-dark">Chân thành cảm ơn sự đóng góp quý báu của bạn!</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="action-cards-wrapper">
+            <div class="row g-4">
+                <!-- Báo cáo lừa đảo -->
+                <div class="col-md-6">
+                    <a href="/Home/Report" class="text-decoration-none d-block h-100">
+                        <div class="action-card report-card">
+                            <div class="icon-circle">
+                                <i class="fas fa-exclamation-triangle fa-3x text-white"></i>
+                            </div>
+                            <h3 class="text-danger">
+                                <i class="fas fa-flag me-2"></i>
+                                Báo cáo lừa đảo
+                            </h3>
+                            <p>
+                                Gửi thông tin về số điện thoại, tài khoản ngân hàng hoặc đường link có dấu hiệu lừa đảo để bảo vệ cộng đồng.
+                            </p>
+                            <div class="mt-4">
+                                <i class="fas fa-arrow-right text-danger fa-lg"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Gửi khiếu nại -->
+                <div class="col-md-6">
+                    <a href="/Home/Appeal" class="text-decoration-none d-block h-100">
+                        <div class="action-card appeal-card">
+                            <div class="icon-circle">
+                                <i class="fas fa-shield-halved fa-3x text-white"></i>
+                            </div>
+                            <h3 class="text-primary">
+                                <i class="fas fa-balance-scale me-2"></i>
+                                Gửi khiếu nại
+                            </h3>
+                            <p>
+                                Khiếu nại về việc bị báo cáo sai hoặc muốn xác minh lại danh sách chặn với bằng chứng rõ ràng.
+                            </p>
+                            <div class="mt-4">
+                                <i class="fas fa-arrow-right text-primary fa-lg"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <p class="text-muted">
+                <i class="fas fa-info-circle me-2"></i>
+                Mọi thông tin báo cáo sẽ được xử lý và xác minh cẩn thận bởi đội ngũ của chúng tôi
+            </p>
+        </div>
+    </div>
+</div>

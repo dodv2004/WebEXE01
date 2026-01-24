@@ -1,0 +1,56 @@
+﻿@model DAL.Models.LoginViewModel
+@{
+    ViewBag.Title = "Đăng nhập - AntiScam";
+}
+
+<section class="py-5 d-flex align-items-center" style="background: var(--dark-bg); min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card border-0 shadow-lg p-4" style="background: var(--card-bg); border-radius: 20px;">
+                    <div class="text-center mb-4">
+                        <div class="display-4 text-warning mb-2"><i class="fas fa-user-lock"></i></div>
+                        <h3 class="fw-bold text-light">Chào mừng trở lại</h3>
+                        <p class="text-muted small">Đăng nhập để tiếp tục tra cứu an toàn</p>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger border-0 small py-2 mb-3 animate__animated animate__shakeX">
+                            <i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error
+                        </div>
+                    }
+                    @if (TempData["Message"] != null)
+                    {
+                        <div class="alert alert-success border-0 small py-2 mb-3">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["Message"]
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label text-light opacity-75 small">Email</label>
+                            <input asp-for="Email" class="form-control bg-dark text-light border-secondary shadow-none" placeholder="name@example.com" required />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label text-light opacity-75 small">Mật khẩu</label>
+                                <a asp-action="ForgotPassword" class="text-warning text-decoration-none small">Quên mật khẩu?</a>
+                            </div>
+                            <input asp-for="Password" type="password" class="form-control bg-dark text-light border-secondary shadow-none" placeholder="••••••••" required />
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold py-2 mb-3 rounded-pill">
+                            Đăng nhập ngay
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <p class="text-muted small mb-0">Chưa có tài khoản? <a asp-action="Register" class="text-warning fw-bold text-decoration-none">Đăng ký thành viên</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

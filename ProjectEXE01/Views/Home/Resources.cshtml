@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Tài nguyên & Hướng dẫn - AntiScam";
+}
+
+<section class="py-5" style="background: var(--dark-bg); min-height: 100vh;">
+    <div class="container">
+        <div class="text-center mb-5 animate__animated animate__fadeIn">
+            <h1 class="display-4 fw-bold text-light">Cẩm Nang <span class="text-warning">Phòng Chống</span> Lừa Đảo</h1>
+            <p class="text-white-50">Trang bị kiến thức là cách tốt nhất để bảo vệ chính mình trong năm 2026.</p>
+        </div>
+
+        @* PHẦN 1: DẤU HIỆU NHẬN BIẾT *@
+        <div class="row mb-5">
+            <div class="col-12 mb-4">
+                <h3 class="text-warning border-start border-4 border-warning ps-3">1. Dấu hiệu nhận biết lừa đảo</h3>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 bg-dark border-secondary text-light shadow-sm">
+                    <div class="card-body">
+                        <div class="display-6 text-danger mb-3"><i class="fas fa-clock"></i></div>
+                        <h5 class="fw-bold">Tạo sự cấp bách</h5>
+                        <p class="small text-white-50">Kẻ xấu thường ép bạn phải hành động ngay lập tức (khóa tài khoản, nộp phạt...) để bạn không có thời gian suy nghĩ hoặc kiểm tra lại.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 bg-dark border-secondary text-light shadow-sm">
+                    <div class="card-body">
+                        <div class="display-6 text-success mb-3"><i class="fas fa-money-bill-wave"></i></div>
+                        <h5 class="fw-bold">Việc nhẹ lương cao</h5>
+                        <p class="small text-white-50">Lời mời chào kiếm tiền dễ dàng, lợi nhuận cực cao mà không cần kỹ năng. Nhớ rằng: "Miếng phô mai miễn phí chỉ có trong bẫy chuột".</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 bg-dark border-secondary text-light shadow-sm">
+                    <div class="card-body">
+                        <div class="display-6 text-info mb-3"><i class="fas fa-link"></i></div>
+                        <h5 class="fw-bold">Đường link lạ (Phishing)</h5>
+                        <p class="small text-white-50">Các link có tên miền gần giống ngân hàng hoặc cơ quan nhà nước (ví dụ: vcb-verify.com thay vì vietcombank.com.vn).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        @* PHẦN 2: BẢNG SO SÁNH *@
+        <div class="row mb-5">
+            <div class="col-12 mb-4">
+                <h3 class="text-primary border-start border-4 border-primary ps-3">2. Phân biệt Giao dịch An toàn vs Lừa đảo</h3>
+            </div>
+            <div class="col-12">
+                <div class="table-responsive rounded-4 shadow-lg">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Đặc điểm</th>
+                                <th>Giao dịch An toàn</th>
+                                <th>Dấu hiệu Lừa đảo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">Yêu cầu mã OTP</td>
+                                <td class="text-success">Không bao giờ yêu cầu</td>
+                                <td class="text-danger">Đòi mã OTP để "xác minh"</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Kênh liên lạc</td>
+                                <td class="text-success">Số tổng đài chính thức, app</td>
+                                <td class="text-danger">Số lạ, Telegram, Zalo ẩn danh</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Thông tin cá nhân</td>
+                                <td class="text-success">Bảo mật tuyệt đối</td>
+                                <td class="text-danger">Yêu cầu cung cấp CCCD, mật khẩu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @* PHẦN 3: LỜI KHUYÊN TỪ CHUYÊN GIA *@
+        <div class="row mb-5">
+            <div class="col-12 mb-4">
+                <h3 class="text-success border-start border-4 border-success ps-3">3. Quy tắc 3 KHÔNG</h3>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 bg-success bg-opacity-10 border border-success h-100">
+                    <h4 class="fw-bold text-success">KHÔNG VỘI VÃ</h4>
+                    <p class="text-white-50">Luôn dành 5-10 phút để kiểm tra lại thông tin qua các kênh chính thức.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 bg-success bg-opacity-10 border border-success h-100">
+                    <h4 class="fw-bold text-success">KHÔNG CHIA SẺ</h4>
+                    <p class="text-white-50">Tuyệt đối không gửi mã OTP, mật khẩu cho bất kỳ ai, kể cả nhân viên ngân hàng.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 bg-success bg-opacity-10 border border-success h-100">
+                    <h4 class="fw-bold text-success">KHÔNG NHẤN LINK</h4>
+                    <p class="text-white-50">Cẩn trọng với các link từ tin nhắn SMS, email không rõ nguồn gốc.</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        @* PHẦN 4: HÀNH ĐỘNG KHI BỊ LỪA *@
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-danger bg-opacity-10 border-danger p-4 rounded-4 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="fw-bold text-danger"><i class="fas fa-shield-virus me-2"></i>Tôi phải làm gì khi đã lỡ chuyển tiền/cung cấp thông tin?</h4>
+                        <ol class="text-white mt-3">
+                            <li class="mb-2"><strong>Liên hệ ngân hàng ngay lập tức:</strong> Yêu cầu tạm khóa thẻ và chặn các giao dịch đi.</li>
+                            <li class="mb-2"><strong>Đổi mật khẩu:</strong> Thực hiện đổi mật khẩu tất cả các tài khoản MXH, ngân hàng, email.</li>
+                            <li class="mb-2"><strong>Báo cáo với AntiScam:</strong> Sử dụng tính năng <a asp-action="Report" class="text-warning fw-bold">Gửi Báo Cáo</a> để cảnh báo cho cộng đồng.</li>
+                            <li><strong>Trình báo cơ quan chức năng:</strong> Đến cơ quan Công an gần nhất để nộp đơn tố giác.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #ffc107 !important;
+        }
+
+    .table-responsive {
+        border: 1px solid #444;
+    }
+</style>

@@ -16,38 +16,83 @@ namespace ProjectEXE01.Controllers
         }
 
         [HttpGet]
-        [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // Sử dụng ViewBag/TempData để truyền thông báo từ các RedirectToAction khác
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                // Lấy thông tin user từ Service
+                var (success, message, user) = await _service.GetUserProfileAsync(userEmail);
+                if (success && user != null)
+                {
+                    ViewBag.IsVip = user.IsVip;
+                    ViewBag.RemainingSearches = 15 - user.SearchCount;
+                }
+            }
+
             ViewBag.Message = TempData["Message"] as string;
             ViewBag.IsError = TempData["IsError"] as bool? ?? false;
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Check(string query)
         {
-            if (string.IsNullOrWhiteSpace(query))
+            // 1. Kiểm tra session đăng nhập
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(userEmail))
             {
-                TempData["Message"] = "Vui lòng nhập thông tin tra cứu.";
+                TempData["Message"] = "Vui lòng đăng nhập để sử dụng tính năng tra cứu.";
                 TempData["IsError"] = true;
                 return RedirectToAction("Index");
             }
 
-            // Gọi Service đã được tối ưu để trả về Result DTO
+            // 2. Kiểm tra chuỗi nhập vào trước khi làm bất cứ việc gì
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                TempData["Message"] = "Vui lòng nhập số điện thoại hoặc STK cần kiểm tra.";
+                TempData["IsError"] = true;
+                return RedirectToAction("Index");
+            }
+
+            // 3. KIỂM TRA QUYỀN (Không tăng lượt ở bước này)
+            // Hàm này sẽ check xem user là VIP hay đã hết 15 lượt chưa
+            var permission = await _service.CheckSearchPermissionAsync(userEmail);
+            if (!permission.CanSearch)
+            {
+                TempData["Message"] = permission.Message;
+                TempData["IsError"] = true;
+                return RedirectToAction("Index");
+            }
+
+            // 4. THỰC HIỆN TRA CỨU
             var (success, message, result) = await _service.SearchAsync(query);
 
             if (!success)
             {
-                // Xử lý các lỗi nghiệp vụ trong Service
                 TempData["Message"] = message;
                 TempData["IsError"] = true;
                 return RedirectToAction("Index");
             }
 
-            // Trả về View Result với DTO
-            return View("Result", result);
+            // 5. CẬP NHẬT LƯỢT DÙNG (Chỉ chạy khi tra cứu hợp lệ)
+            // Hàm IncrementSearchCountAsync sẽ tự check nếu là VIP thì KHÔNG tăng lượt
+            await _service.IncrementSearchCountAsync(userEmail);
+
+            // 6. TRẢ VỀ KẾT QUẢ
+            // Nếu tìm thấy scammer, chuyển sang trang Result. Nếu không, báo tin vui ở Index
+            if (result != null && result.Found)
+            {
+                return View("Result", result);
+            }
+            else
+            {
+                TempData["Message"] = "Thông tin này hiện chưa có trong danh sách đen. Hãy luôn cảnh giác!";
+                TempData["IsError"] = false;
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpGet]
@@ -142,9 +187,13 @@ namespace ProjectEXE01.Controllers
             return View();
         }
 
-        public IActionResult Ranking()
+        public async Task<IActionResult> Ranking()
         {
-            return View();
+            // Lấy dữ liệu từ Service
+            var topReporters = await _service.GetTopReportersAsync(10);
+
+            // QUAN TRỌNG: Nếu topReporters bị null, hãy truyền một danh sách rỗng để View không bị crash
+            return View(topReporters ?? new List<ReporterRankingDto>());
         }
 
         public IActionResult Media()

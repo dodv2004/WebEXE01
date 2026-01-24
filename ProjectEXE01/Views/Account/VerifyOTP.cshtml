@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Xác thực OTP - AntiScam";
+    string email = ViewBag.Email;
+}
+
+<section class="py-5 d-flex align-items-center" style="background: var(--dark-bg); min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 text-center">
+                <div class="card border-0 shadow-lg p-5" style="background: var(--card-bg); border-radius: 20px;">
+                    <div class="mb-4">
+                        <div class="display-4 text-warning mb-2"><i class="fas fa-envelope-open-text"></i></div>
+                        <h3 class="fw-bold text-light">Xác thực OTP</h3>
+                        <p class="text-muted small">Mã OTP đã được gửi đến: <br><strong class="text-warning">@email</strong></p>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger border-0 small py-2 mb-3">@ViewBag.Error</div>
+                    }
+
+                    <form asp-action="VerifyOTP" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="email" value="@email" />
+                        <input type="hidden" name="flow" value="@ViewBag.Flow" />
+
+                        <div class="mb-4">
+                            <input type="text" name="otp" class="form-control bg-dark text-light border-secondary text-center fw-bold fs-2"
+                                   placeholder="000000" maxlength="6" autofocus required
+                                   style="letter-spacing: 15px; border-radius: 10px;" />
+                            <div class="mt-2 text-muted small">Mã có hiệu lực trong 5 phút</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 rounded-pill shadow">
+                            @(ViewBag.Flow == "forgot" ? "Xác nhận mã đặt lại" : "Xác nhận kích hoạt")
+                        </button>
+                    </form>
+
+                    <div class="mt-4">
+                        <p class="text-muted small">Không nhận được mã? <a href="#" class="text-warning text-decoration-none">Gửi lại sau 60s</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    document.querySelector('input[name="otp"]').oninput = function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    };
+</script>

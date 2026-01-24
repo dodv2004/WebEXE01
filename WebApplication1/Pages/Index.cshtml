@@ -1,92 +1,135 @@
-﻿@page
+﻿
+@page
 @model WebAdmin.Pages.IndexModel
-
 @{
-    ViewData["Title"] = "Index";
-   
+    ViewData["Title"] = "Dashboard Tổng quan";
 }
 
-<h1 class="text-primary"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Tổng quan</h1>
-<p class="lead text-muted">Chào mừng đến với bảng điều khiển Admin. Dưới đây là tình trạng hiện tại của hệ thống chống lừa đảo.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="text-primary fw-bold"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Tổng quan</h1>
+        <p class="lead text-muted">Chào mừng đến với hệ thống quản trị AntiScam 2026.</p>
+    </div>
+    <div class="text-end">
+        <h4 class="text-warning fw-bold mb-0">Doanh thu tháng này</h4>
+        <h2 class="fw-bold">@Model.MonthlyRevenue.ToString("N0")đ</h2>
+    </div>
+</div>
 
-<div class="row mt-4">
+<div class="row">
+    @* Card 1: Doanh thu (Mới thêm) *@
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-wallet fa-3x me-3 opacity-50"></i>
+                    <div>
+                        <h5 class="card-title fw-bold mb-0">TỔNG DOANH THU</h5>
+                        <p class="h3 fw-bold">@Model.TotalRevenue.ToString("N0")đ</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-dark bg-opacity-10 border-0">
+                <span class="small fw-bold">Từ các gói nâng cấp VIP 89k</span>
+            </div>
+        </div>
+    </div>
 
-    @* Card 1: Tổng số mục đã báo cáo *@
-    <div class="col-lg-4 col-md-6 mb-4">
+    @* Card 2: Tổng mục ghi nhận *@
+    <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-0 shadow-sm h-100 bg-primary text-white">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-list-alt fa-3x me-3"></i>
+                    <i class="fas fa-list-alt fa-3x me-3 opacity-50"></i>
                     <div>
-                        <h5 class="card-title fw-bold">TỔNG MỤC GHI NHẬN</h5>
-                        <p class="h2">@Model.TotalEntities</p>
+                        <h5 class="card-title fw-bold mb-0">MỤC GHI NHẬN</h5>
+                        <p class="h3 fw-bold">@Model.TotalEntities</p>
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-primary-subtle border-top border-light border-opacity-25">
-                <a asp-page="/Reports/Index" class="text-white text-decoration-none small fw-bold">
-                    Xem chi tiết Báo cáo <i class="fas fa-arrow-circle-right"></i>
-                </a>
+            <div class="card-footer bg-white bg-opacity-25 border-0">
+                <a asp-page="/Reports/Index" class="text-white text-decoration-none small fw-bold">Chi tiết <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </div>
 
-    @* Card 2: Báo cáo chờ duyệt (Mức ưu tiên cao) *@
-    <div class="col-lg-4 col-md-6 mb-4">
+    @* Card 3: Báo cáo chờ duyệt *@
+    <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-0 shadow-sm h-100 @(Model.PendingReports > 0 ? "bg-danger" : "bg-success") text-white">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-exclamation-triangle fa-3x me-3"></i>
+                    <i class="fas fa-exclamation-triangle fa-3x me-3 opacity-50"></i>
                     <div>
-                        <h5 class="card-title fw-bold">BÁO CÁO CHỜ DUYỆT</h5>
-                        <p class="h2">@Model.PendingReports</p>
+                        <h5 class="card-title fw-bold mb-0">CHỜ DUYỆT</h5>
+                        <p class="h3 fw-bold">@Model.PendingReports</p>
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-light-subtle border-top border-light border-opacity-25">
-                <a asp-page="/Reports/Index" class="text-white text-decoration-none small fw-bold">
-                    Duyệt báo cáo ngay <i class="fas fa-arrow-circle-right"></i>
-                </a>
+            <div class="card-footer bg-white bg-opacity-25 border-0">
+                <a asp-page="/Reports/Index" class="text-white text-decoration-none small fw-bold">Duyệt ngay <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </div>
 
-    @* Card 3: Khiếu nại chờ xử lý *@
-    <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100 @(Model.PendingAppeals > 0 ? "bg-warning" : "bg-info") text-white">
+    @* Card 4: Khiếu nại chờ xử lý *@
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100 @(Model.PendingAppeals > 0 ? "bg-info" : "bg-secondary") text-white">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-gavel fa-3x me-3"></i>
+                    <i class="fas fa-gavel fa-3x me-3 opacity-50"></i>
                     <div>
-                        <h5 class="card-title fw-bold">KHIẾU NẠI CHỜ XỬ LÝ</h5>
-                        <p class="h2">@Model.PendingAppeals</p>
+                        <h5 class="card-title fw-bold mb-0">KHIẾU NẠI</h5>
+                        <p class="h3 fw-bold">@Model.PendingAppeals</p>
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-light-subtle border-top border-light border-opacity-25">
-                <a asp-page="/Appeals/Index" class="text-white text-decoration-none small fw-bold">
-                    Xử lý khiếu nại <i class="fas fa-arrow-circle-right"></i>
+            <div class="card-footer bg-white bg-opacity-25 border-0">
+                <a asp-page="/Appeals/Index" class="text-white text-decoration-none small fw-bold">Xử lý <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    @* Card 5: Quản lý người dùng - Màu Tím (User) *@
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100 bg-dark text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-users fa-3x me-3 text-info opacity-75"></i>
+                    <div>
+                        <h5 class="card-title fw-bold mb-0">TỔNG NGƯỜI DÙNG</h5>
+                        <p class="h3 fw-bold">@Model.TotalUsers</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white bg-opacity-10 border-0">
+                <a asp-page="/Accounts/Index" class="text-info text-decoration-none small fw-bold">
+                    Quản lý tài khoản <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
     </div>
-
 </div>
 
-<div class="row mt-3">
+@* Hoạt động cần chú ý *@
+<div class="row mt-2">
     <div class="col-12">
-        <div class="card shadow">
-            <div class="card-header bg-white fw-bold">Hoạt động cần chú ý</div>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-bell text-warning me-2"></i>Thông báo hệ thống</h5>
+            </div>
             <div class="card-body">
                 @if (Model.PendingReports > 0 || Model.PendingAppeals > 0)
                 {
-                    <p class="text-danger">
-                        Hiện tại có @Model.PendingReports báo cáo và @Model.PendingAppeals khiếu nại cần sự can thiệp của Admin. Vui lòng ưu tiên xử lý để giữ dữ liệu hệ thống chính xác.
-                    </p>
+                    <div class="alert alert-danger mb-0 border-0 shadow-sm">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <strong>Chú ý:</strong> Đang có @Model.PendingReports báo cáo và @Model.PendingAppeals khiếu nại cần xử lý gấp.
+                    </div>
                 }
                 else
                 {
-                    <p class="text-success">Tất cả các mục đã được xử lý. Hệ thống đang hoạt động ổn định.</p>
+                    <div class="alert alert-success mb-0 border-0 shadow-sm">
+                        <i class="fas fa-check-double me-2"></i>
+                        Mọi thứ đều ổn! Hệ thống sạch bóng báo cáo tồn đọng.
+                    </div>
                 }
             </div>
         </div>

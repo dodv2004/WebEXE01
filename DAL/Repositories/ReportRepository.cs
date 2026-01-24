@@ -169,5 +169,67 @@ namespace DAL.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email.ToLower().Trim());
+        }
+
+        public async Task AddUserAsync(User user)
+        {
+            _context.Users.Add(user);
+            await SaveAsync();
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await SaveAsync();
+        }
+
+        // Triển khai hàm thêm giao dịch mới
+        public async Task AddTransactionAsync(Transaction transaction)
+        {
+            // Thêm bản ghi vào DbSet Transactions
+            _context.Transactions.Add(transaction);
+
+            // Gọi hàm SaveAsync() có sẵn của bạn để hoàn tất lưu xuống SQL Server
+            await SaveAsync();
+        }
+
+        // Triển khai hàm lấy toàn bộ lịch sử để quản lý doanh thu
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
+        {
+            return await _context.Transactions
+                .OrderByDescending(t => t.PaymentDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ReporterRankingDto>> GetTopReportersAsync(int count)
+        {
+            return await _context.Reporters
+                .Select(r => new ReporterRankingDto
+                {
+                    Name = r.Name,
+                    // Ví dụ: abc...z@gmail.com
+                    MaskedEmail = r.Email.Substring(0, 1) + "..." + r.Email.Substring(r.Email.IndexOf("@") - 1),
+                    TotalReports = r.ReporterReportChecks.Count()
+                })
+                .OrderByDescending(r => r.TotalReports)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        // Triển khai hàm lấy danh sách người dùng
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            // Lấy toàn bộ danh sách, sắp xếp theo ID giảm dần
+            return await _context.Users
+                .OrderByDescending(u => u.Id)
+                .ToListAsync();
+        }
+
+        
     }
 }

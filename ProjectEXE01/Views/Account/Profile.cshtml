@@ -1,0 +1,93 @@
+﻿@model DAL.Models.User
+@{
+    ViewBag.Title = "Hồ sơ cá nhân - AntiScam";
+    // Tính lượt tra cứu dựa trên kiểu int của Model
+    int remainingSearches = 15 - Model.SearchCount;
+}
+
+<section class="py-5" style="background: var(--dark-bg); min-height: 90vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-lg text-light" style="background: var(--card-bg); border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;">
+
+                    <div class="card-header border-0 bg-transparent text-center pt-5">
+                        <div class="position-relative d-inline-block">
+                            <div class="display-1 text-warning mb-2"><i class="fas fa-user-circle"></i></div>
+                            @if (Model.IsVip && Model.VipExpiryDate.HasValue)
+                            {
+                                <div class="alert alert-warning border-0 shadow-sm mt-3">
+                                    <i class="fas fa-history me-2"></i>
+                                    Gói VIP của bạn sẽ hết hạn vào ngày:
+                                    <strong>@Model.VipExpiryDate.Value.ToString("dd/MM/yyyy HH:mm")</strong>
+                                </div>
+                            }
+                        </div>
+                        <h3 class="fw-bold mt-2 text-white">@Model.Email</h3>
+                        <p class="text-white-50 small"><i class="far fa-calendar-alt me-1"></i> Thành viên từ: @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+                    </div>
+
+                    <div class="card-body px-4 pb-5">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); text-center;">
+                                    <small class="text-white-50 d-block mb-1 fw-medium">Trạng thái</small>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i>Đã kích hoạt</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger fw-bold"><i class="fas fa-times-circle me-1"></i>Chưa xác thực</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); text-center;">
+                                    <small class="text-white-50 d-block mb-1 fw-medium">Loại tài khoản</small>
+                                    <span class="text-warning fw-bold">@(Model.IsVip ? "Tài khoản VIP" : "Tài khoản Miễn phí")</span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="p-4 rounded-4" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255, 193, 7, 0.2);">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="fw-bold text-white"><i class="fas fa-bolt me-2 text-warning"></i>Hạn mức tra cứu</span>
+                                        <span class="badge @(remainingSearches > 5 ? "bg-success" : "bg-danger") shadow-sm" style="font-size: 0.9rem;">
+                                            @remainingSearches / 15 lượt
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 12px; border-radius: 10px; background: rgba(255,255,255,0.1);">
+                                        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated"
+                                             role="progressbar"
+                                             style="width: @((remainingSearches / 15.0) * 100)%; box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);"></div>
+                                    </div>
+                                    <p class="text-white-50 small mt-3 text-center mb-0">
+                                        <i class="fas fa-info-circle me-1"></i> Hệ thống tự động đặt lại lượt vào ngày 1 hàng tháng.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-3 mt-4">
+                            @if (!Model.IsVip)
+                            {
+                                <div class="mt-4">
+                                    <p class="text-white-50 small mb-2 text-center">Bạn muốn tra cứu không giới hạn?</p>
+                                    <a asp-controller="Account" asp-action="UpgradeVip"
+                                       class="btn btn-warning btn-lg w-100 fw-bold py-3 rounded-pill text-dark shadow-lg animate__animated animate__pulse animate__infinite">
+                                        <i class="fas fa-gem me-2"></i>Nâng cấp VIP ngay - 89k
+                                    </a>
+                                </div>
+                            }
+                            <a asp-action="Logout" class="btn btn-link text-white-50 text-decoration-none small mt-1">
+                                <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất khỏi hệ thống
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
