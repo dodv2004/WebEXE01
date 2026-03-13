@@ -17,15 +17,11 @@ namespace WebAdmin.Pages.Accounts
         }
 
         // Property ?? View (Index.cshtml) có th? truy c?p d? li?u
-        public IEnumerable<User> Users { get; set; } = new List<User>();
+        public PaginatedList<User> PagedData { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int p = 1)
         {
-            // G?i hàm l?y toàn b? ng??i dùng t? t?ng BLL
-            var allUsers = await _reportService.GetAllUsersAsync();
-
-            // Gán d? li?u vào Property ?? hi?n th?
-            Users = allUsers ?? new List<User>();
+            PagedData = await _reportService.GetUsersPagedAsync(p, 5); // 10 user/trang
         }
     }
 }

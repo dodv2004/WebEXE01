@@ -15,6 +15,7 @@ namespace DAL.Models
         public DateTime PaymentDate { get; set; } = DateTime.Now;
         public string PaymentMethod { get; set; } = "MoMo";
         public string TransactionNote { get; set; } = string.Empty; // Nội dung chuyển khoản
+        public int Status { get; set; }
 
         // Navigation property
         public virtual User? User { get; set; }

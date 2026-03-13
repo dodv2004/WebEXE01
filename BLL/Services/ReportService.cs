@@ -423,43 +423,7 @@ namespace BLL.Services
             }
         }
 
-        // Trong file ReportService.cs
-        public async Task<(bool Success, string Message)> UpgradeToVipAsync(string email)
-        {
-            // 1. Tìm người dùng trong Database
-            var user = await _repository.GetUserByEmailAsync(email);
-            if (user == null) return (false, "Không tìm thấy thông tin tài khoản.");
-
-            // 2. Xác định thời điểm bắt đầu tính hạn VIP
-            // Nếu vẫn còn VIP, ta tính từ ngày hết hạn cũ. Nếu đã hết hoặc chưa có, tính từ Now.
-            DateTime startDate = (user.IsVip && user.VipExpiryDate.HasValue && user.VipExpiryDate > DateTime.Now)
-                                 ? user.VipExpiryDate.Value
-                                 : DateTime.Now;
-
-            // 3. Cập nhật trạng thái và cộng thêm chính xác 1 tháng
-            user.IsVip = true;
-            user.VipExpiryDate = startDate.AddMonths(1); // Tự động xử lý tháng 28, 30 hoặc 31 ngày
-            var bill = new Transaction
-            {
-                UserId = user.Id,
-                Email = user.Email,
-                Amount = 89000, //
-                TransactionNote = $"Nâng cấp VIP cho {user.Email}"
-            };
-            try
-            {
-                await _repository.AddTransactionAsync(bill);
-                // 4. Lưu vào SQL Server thông qua Repository
-                await _repository.UpdateUserAsync(user);
-
-                return (true, $"Nâng cấp VIP thành công! Hạn dùng đến: {user.VipExpiryDate.Value:dd/MM/yyyy HH:mm}");
-            }
-            catch (Exception ex)
-            {
-                // Log lỗi nếu có vấn đề về Database
-                return (false, "Lỗi hệ thống khi cập nhật VIP: " + ex.Message);
-            }
-        }
+       
         public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
         {
             // Gọi xuống Repo để lấy dữ liệu từ SQL Server
@@ -480,7 +444,101 @@ namespace BLL.Services
             // Nếu null, trả về danh sách rỗng để tránh lỗi NullReferenceException ở View
             return users ?? new List<User>();
         }
+        // 1. Triển khai hàm tạo giao dịch chờ duyệt
+        public async Task<bool> CreatePendingTransactionAsync(string email, decimal amount)
+        {
+            var user = await _repository.GetUserByEmailAsync(email);
+            if (user == null) return false;
 
+            var transaction = new Transaction
+            {
+                UserId = user.Id,
+                Email = email,
+                Amount = amount,
+                PaymentDate = DateTime.Now,
+                PaymentMethod = "QR Ngân hàng/MoMo", // Hình thức bạn chọn
+                TransactionNote = $"Nâng cấp VIP cho {email}",
+                Status = 0 // 0: Pending (Chờ duyệt)
+            };
+
+            try
+            {
+                await _repository.AddTransactionAsync(transaction);
+                await _repository.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<(bool Success, string Message)> ApproveTransactionAsync(int transactionId)
+        {
+            var trans = await _repository.GetTransactionByIdAsync(transactionId);
+            if (trans == null) return (false, "Giao dịch không tồn tại.");
+            if (trans.Status != 0) return (false, "Giao dịch này đã được duyệt hoặc từ chối trước đó."); 
+
+            var user = await _repository.GetUserByEmailAsync(trans.Email);
+            if (user == null) return (false, "Không tìm thấy người dùng.");
+
+            try
+            {
+                // 1. Cập nhật trạng thái giao dịch thành THÀNH CÔNG
+                trans.Status = 1;
+
+                // 2. Kích hoạt VIP (Cộng dồn nếu đang là VIP)
+                DateTime startDate = (user.IsVip && user.VipExpiryDate > DateTime.Now)
+                                     ? user.VipExpiryDate.Value : DateTime.Now;
+                user.IsVip = true;
+                user.VipExpiryDate = startDate.AddMonths(1);
+
+                // 3. Lưu tất cả thay đổi trong 1 lượt duy nhất để tối ưu
+                await _repository.UpdateUserAsync(user);
+                await _repository.UpdateTransactionAsync(trans);
+
+                return (true, $"Duyệt thành công Tài khoản {user.Email}.");
+            }
+            catch (Exception ex)
+            {
+                return (false, "Lỗi hệ thống: " + ex.Message);
+            }
+        }
+        public async Task<PaginatedList<Transaction>> GetTransactionsPagedAsync(int pageIndex, int pageSize)
+        {
+            return await _repository.GetTransactionsPagedAsync(pageIndex, pageSize);
+        }
+        public async Task<PaginatedList<User>> GetUsersPagedAsync(int pageIndex, int pageSize)
+    => await _repository.GetUsersPagedAsync(pageIndex, pageSize);
+
+        public async Task<PaginatedList<ReportCheck>> GetReportsPagedAsync(int pageIndex, int pageSize)
+            => await _repository.GetReportsPagedAsync(pageIndex, pageSize);
+
+        public async Task<PaginatedList<Appeal>> GetAppealsPagedAsync(int pageIndex, int pageSize)
+            => await _repository.GetAppealsPagedAsync(pageIndex, pageSize);
+        public async Task<bool> CheckHasPendingTransactionAsync(string email)
+        {
+            return await _repository.HasPendingTransactionAsync(email);
+        }
+        public async Task<(bool Success, string Message)> RejectTransactionAsync(int transactionId)
+        {
+            var trans = await _repository.GetTransactionByIdAsync(transactionId);
+            if (trans == null) return (false, "Giao dịch không tồn tại.");
+            if (trans.Status != 0) return (false, "Giao dịch này đã được xử lý trước đó.");
+
+            try
+            {
+                // Cập nhật trạng thái thành Bị từ chối (ví dụ: Status = 2)
+                trans.Status = 2;
+                await _repository.UpdateTransactionAsync(trans);
+
+                return (true, $"Đã từ chối giao dịch của {trans.Email}.");
+            }
+            catch (Exception ex)
+            {
+                return (false, "Lỗi hệ thống: " + ex.Message);
+            }
+        }
 
     }
 }

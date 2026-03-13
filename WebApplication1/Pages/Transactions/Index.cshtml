@@ -1,0 +1,178 @@
+﻿@page
+@model WebAdmin.Pages.Transactions.IndexModel
+@{
+    ViewData["Title"] = "Quản lý Giao dịch - AntiScam";
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="fas fa-file-invoice-dollar text-primary me-2"></i>Quản lý Giao dịch</h2>
+            <p class="text-muted mb-0">Xác thực các yêu cầu nâng cấp VIP và nạp tiền hệ thống.</p>
+        </div>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info border-0 shadow-sm rounded-4 py-2 px-4 mb-0 animate__animated animate__fadeInRight">
+                <i class="fas fa-info-circle me-2"></i> @TempData["Message"]
+            </div>
+        }
+    </div>
+
+    @* Card chính chứa bảng giao dịch *@
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 px-4 border-bottom-0 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold text-muted text-uppercase small">Lịch sử giao dịch gần đây</h6>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-light border rounded-pill px-3" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-filter me-1"></i> Bộ lọc
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-uppercase small fw-bold text-muted">Thời gian</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted">Khách hàng</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted">Số tiền</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted text-center">Trạng thái</th>
+                        <th class="pe-4 py-3 text-end text-uppercase small fw-bold text-muted">Thao tác Admin</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    @if (Model.PagedData != null && Model.PagedData.Items.Any())
+                    {
+                        @foreach (var item in Model.PagedData.Items)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">@item.PaymentDate.ToString("dd/MM/yyyy")</div>
+                                    <div class="text-muted small">@item.PaymentDate.ToString("HH:mm:ss")</div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2 bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-envelope small"></i>
+                                        </div>
+                                        <span class="fw-medium">@item.Email</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-success fs-5">@item.Amount.ToString("N0")</span><small class="text-success fw-bold ms-1">đ</small>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.Status == 0)
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning border border-warning rounded-pill px-3 py-2">
+                                            <i class="fas fa-spinner fa-spin me-1"></i> Chờ duyệt
+                                        </span>
+                                    }
+                                    else if (item.Status == 1)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3 py-2">
+                                            <i class="fas fa-check-circle me-1"></i> Thành công
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger rounded-pill px-3 py-2">
+                                            <i class="fas fa-times-circle me-1"></i> Bị từ chối
+                                        </span>
+                                    }
+                                </td>
+                                <td class="pe-4 text-end">
+                                    @if (item.Status == 0)
+                                    {
+                                        <div class="btn-group shadow-sm rounded-pill overflow-hidden border">
+                                            <form method="post" asp-page-handler="Approve" asp-route-id="@item.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-white btn-sm px-3 py-2 border-0 text-success fw-bold">
+                                                    <i class="fas fa-check me-1"></i> DUYỆT
+                                                </button>
+                                            </form>
+                                            <div class="vr my-2 opacity-25"></div>
+                                            <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline"
+                                                  onsubmit="return confirm('Xác nhận từ chối giao dịch này?')">
+                                                <button type="submit" class="btn btn-white btn-sm px-3 py-2 border-0 text-danger fw-bold">
+                                                    <i class="fas fa-ban me-1"></i> TỪ CHỐI
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-light border rounded-pill px-3 disabled">
+                                            <i class="fas fa-lock me-1 opacity-50"></i> Đã đóng
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076403.png" width="80" class="opacity-25 mb-3" />
+                                <p class="text-muted fw-bold">Không tìm thấy dữ liệu giao dịch nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @* Thanh phân trang *@
+        @if (Model.PagedData != null && Model.PagedData.TotalPages > 1)
+        {
+            <div class="card-footer bg-white border-top-0 py-4">
+                <nav>
+                    <ul class="pagination pagination-sm justify-content-center mb-0">
+                        <li class="page-item @(Model.PagedData.HasPreviousPage ? "" : "disabled")">
+                            <a class="page-link rounded-circle mx-1 border-0 shadow-sm" asp-route-p="@(Model.PagedData.PageIndex - 1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= Model.PagedData.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PagedData.PageIndex ? "active" : "")">
+                                <a class="page-link rounded-circle mx-1 border-0 shadow-sm" asp-route-p="@i">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.PagedData.HasNextPage ? "" : "disabled")">
+                            <a class="page-link rounded-circle mx-1 border-0 shadow-sm" asp-route-p="@(Model.PagedData.PageIndex + 1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Tinh chỉnh thêm cho trang Giao dịch */
+    .table thead th {
+        letter-spacing: 0.5px;
+    }
+
+    .btn-white:hover {
+        background-color: #f8f9fa;
+    }
+
+    .bg-success-subtle {
+        background-color: #d1e7dd !important;
+    }
+
+    .bg-warning-subtle {
+        background-color: #fff3cd !important;
+    }
+
+    .bg-danger-subtle {
+        background-color: #f8d7da !important;
+    }
+</style>

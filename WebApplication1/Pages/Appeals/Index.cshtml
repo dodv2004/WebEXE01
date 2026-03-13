@@ -1,117 +1,104 @@
 ﻿@page
 @model WebAdmin.Pages.Appeals.IndexModel
-
 @{
-    ViewData["Title"] = "Xử lí khiếu nại";
+    ViewData["Title"] = "Xử lý khiếu nại";
 }
 
-<h1 class="text-primary"><i class="fas fa-gavel me-2"></i> Xử lý Yêu cầu Khiếu nại</h1>
-
-@* Hiển thị thông báo (StatusMessage) *@
-@if (!string.IsNullOrEmpty(Model.StatusMessage))
-{
-    var alertClass = Model.StatusMessage.StartsWith("Success") ? "alert-success" : "alert-danger";
-    <div class="alert @alertClass" role="alert">
-        @Model.StatusMessage.Replace("Success: ", "").Replace("Error: ", "")
+<div class="container-fluid p-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="fas fa-gavel text-primary me-2"></i>Xử lý Khiếu nại</h2>
+            <p class="text-muted mb-0">Xem xét và phản hồi các yêu cầu minh oan từ người dùng.</p>
+        </div>
     </div>
-}
 
-<div class="card shadow p-3">
-    @* Xóa nút Create New, thay bằng thống kê đơn giản *@
-    @if (Model.AppealList.Any())
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
     {
-        <p>Tìm thấy <strong class="text-danger">@Model.AppealList.Count</strong> yêu cầu đang chờ xử lý.</p>
+        <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4 py-3 px-4">
+            <i class="fas fa-info-circle me-2"></i> @Model.StatusMessage
+        </div>
     }
 
-    <table class="table table-striped table-hover mt-2">
-        <thead>
-            <tr>
-                <th style="width:5%;">ID</th>
-                <th style="width:15%;">Query Bị Khiếu nại</th>
-                <th style="width:15%;">Người Khiếu nại</th>
-                <th style="width:30%;">Lý do</th>
-                <th style="width:10%;">Ngày Gửi</th>
-                <th style="width:10%;">Trạng thái</th>
-                <th style="width:15%;">Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!Model.AppealList.Any())
-            {
-                <tr>
-                    <td colspan="7" class="text-center text-muted py-4">
-                        <i class="fas fa-check-circle me-2 text-success"></i>
-                        Không có yêu cầu khiếu nại nào đang chờ xử lý.
-                    </td>
-                </tr>
-            }
-            else
-            {
-                @foreach (var item in Model.AppealList)
-                {
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 px-4 border-bottom-0">
+            <h6 class="mb-0 fw-bold">Danh sách yêu cầu (@Model.AppealList.Count)</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
                     <tr>
-                        <td>@item.Id</td>
-                        <td>
-                            <strong class="text-primary">@item.Query</strong>
-                            @if (item.ReportCheck != null)
-                            {
-                                @* Hiển thị ID của ReportCheck liên quan *@
-                                <span class="badge bg-secondary ms-1">RC ID: @item.ReportCheckId</span>
-                            }
-                        </td>
-                        <td>
-                            @item.AppellantName <br />
-                            <small class="text-muted">@item.AppellantEmail</small>
-                        </td>
-                        <td>
-                            @* Hiển thị Reason rõ ràng hơn *@
-                            <div style="max-height: 80px; overflow: auto; border: 1px solid #eee; padding: 5px; background-color:#f9f9f9">
-                                @item.Reason
-                            </div>
-                        </td>
-                        <td>@item.SubmittedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>
-                            @{
-                                var badgeClass = item.Status == "Pending" ? "bg-warning" : item.Status == "Accepted" ? "bg-success" : "bg-danger";
-                            }
-                            <span class="badge @badgeClass">@item.Status</span>
-                        </td>
-                        <td>
-                            @* Nút Hành động chỉ hiển thị khi Status là Pending *@
-                            @if (item.Status == "Pending")
-                            {
-                                <div class="d-grid gap-1">
-                                    @* Form Chấp nhận - Gọi OnPostAccept *@
-                                    <form method="post" asp-page-handler="Accept">
-                                        <input type="hidden" name="id" value="@item.Id" />
-                                        <button type="submit" class="btn btn-sm btn-success w-100"
-                                                onclick="return confirm('XÁC NHẬN CHẤP NHẬN khiếu nại (Gỡ trạng thái lừa đảo)?');">
-                                            <i class="fas fa-check"></i> Chấp nhận
-                                        </button>
-                                    </form>
-
-                                    @* Form Từ chối - Gọi OnPostReject *@
-                                    <form method="post" asp-page-handler="Reject">
-                                        <input type="hidden" name="id" value="@item.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100"
-                                                onclick="return confirm('XÁC NHẬN TỪ CHỐI khiếu nại (Giữ trạng thái báo cáo)?');">
-                                            <i class="fas fa-times"></i> Từ chối
-                                        </button>
-                                    </form>
-                                </div>
-                            }
-                            else
-                            {
-                                <span class="text-success small">Đã xử lý</span>
-                            }
-                        </td>
+                        <th class="ps-4 py-3 text-uppercase small fw-bold text-muted">Query</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted">Người Khiếu nại</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted" style="width: 30%;">Lý do</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted">Ngày Gửi</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted text-center">Trạng thái</th>
+                        <th class="pe-4 py-3 text-end text-uppercase small fw-bold text-muted">Hành động</th>
                     </tr>
-                }
-            }
-        </tbody>
-    </table>
-</div>
+                </thead>
+                <tbody class="border-top-0">
+                    @foreach (var item in Model.PagedData.Items)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold text-primary">@item.Query</td>
+                            <td>
+                                <div class="fw-bold">@item.AppellantName</div>
+                                <div class="text-muted small">@item.AppellantEmail</div>
+                            </td>
+                            <td>
+                                <div class="text-muted overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 0.85rem;">
+                                    @item.Reason
+                                </div>
+                            </td>
+                            <td>@item.SubmittedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
+                                @{
+                                    var statusBadge = item.Status switch
+                                    {
+                                        "Pending" => "bg-warning-subtle text-warning border-warning",
+                                        "Accepted" => "bg-success-subtle text-success border-success",
+                                        _ => "bg-danger-subtle text-danger border-danger"
+                                    };
+                                }
+                                <span class="badge @statusBadge border rounded-pill px-3">@item.Status</span>
+                            </td>
+                            <td class="pe-4 text-end">
+                                @if (item.Status == "Pending")
+                                {
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <form method="post" asp-page-handler="Accept" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-sm btn-success rounded-3"><i class="fas fa-check"></i> Duyệt</button>
+                                        </form>
+                                        <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-3"><i class="fas fa-times"></i></button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-secondary rounded-pill border">Đã xử lý</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-@section Scripts {
-    @* Các script cần thiết *@
-}
+        <div class="card-footer bg-white border-0 py-4">
+            <ul class="pagination pagination-sm justify-content-center mb-0">
+                <li class="page-item @(Model.PagedData.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link rounded-circle mx-1 border-0 shadow-sm" asp-route-p="@(Model.PagedData.PageIndex - 1)"><i class="fas fa-chevron-left"></i></a>
+                </li>
+                @for (int i = 1; i <= Model.PagedData.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PagedData.PageIndex ? "active" : "")">
+                        <a class="page-link rounded-circle mx-1 border-0 shadow-sm" asp-route-p="@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PagedData.HasNextPage ? "" : "disabled")">
+                    <a class="page-link rounded-circle mx-1 border-0 shadow-sm" asp-route-p="@(Model.PagedData.PageIndex + 1)"><i class="fas fa-chevron-right"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

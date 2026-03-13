@@ -1,337 +1,238 @@
 ﻿@model DAL.Models.AppealViewModel
 @{
-    ViewData["Title"] = "Gửi Yêu cầu Khiếu nại";
+    ViewData["Title"] = "Gửi Yêu cầu Khiếu nại - Hệ thống AntiScam";
 }
 
 <style>
-    .appeal-form-page {
-        background: linear-gradient(135deg, #f0f8ff 0%, #e3f2fd 100%);
-        min-height: calc(100vh - 200px);
-        padding: 3rem 0;
+    /* Đồng bộ Background với hệ thống */
+    .appeal-page-wrapper {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        min-height: 100vh;
+        padding: 80px 0;
+        position: relative;
     }
 
-    .form-header {
-        text-align: center;
-        margin-bottom: 3rem;
-        animation: fadeInDown 0.8s ease;
+        .appeal-page-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at bottom left, rgba(52, 152, 219, 0.05) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+    /* Card Style */
+    .appeal-card {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 50px;
+        position: relative;
+        z-index: 1;
     }
 
-        .form-header h2 {
-            font-size: 2.5rem;
+    .header-pro {
+        margin-bottom: 40px;
+    }
+
+        .header-pro h2 {
             font-weight: 800;
-            color: #0d6efd;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            color: #1a1a2e;
+            letter-spacing: -1px;
         }
 
-        .form-header .subtitle {
-            font-size: 1.1rem;
-            color: #6c757d;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-    .form-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(13, 110, 253, 0.15);
-        padding: 3rem;
-        max-width: 800px;
-        margin: 0 auto;
-        animation: fadeInUp 0.8s ease;
-        border: 2px solid rgba(13, 110, 253, 0.1);
+    /* Banner hướng dẫn */
+    .info-banner-pro {
+        background: #f0f7ff;
+        padding: 25px;
+        border-radius: 16px;
+        border-left: 5px solid #3498db;
+        margin-bottom: 35px;
     }
 
-    .info-banner {
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        border-left: 5px solid #0d6efd;
-        margin-bottom: 2rem;
-    }
-
-        .info-banner h5 {
-            color: #0d6efd;
+        .info-banner-pro h5 {
+            color: #2980b9;
             font-weight: 700;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
         }
 
-        .info-banner ul {
-            margin-bottom: 0;
-            padding-left: 1.5rem;
+        .info-banner-pro ul li {
+            color: #4a5568;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
         }
 
-        .info-banner li {
-            color: #495057;
-            margin-bottom: 0.5rem;
-        }
-
-    .form-section {
-        background: #f8f9fa;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        border-left: 5px solid #0d6efd;
+    /* Section Styling */
+    .appeal-section {
+        background: #f8f9fc;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #edf2f7;
     }
 
-    .form-section-title {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #0d6efd;
-        margin-bottom: 1.5rem;
+    .section-label {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-        .form-label .required {
-            color: #dc3545;
-            font-size: 1.2rem;
-        }
-
-    .form-control, .form-select {
-        border-radius: 10px;
-        border: 2px solid #e9ecef;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-        }
-
-    textarea.form-control {
-        resize: vertical;
-        min-height: 150px;
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
-        border: none;
-        padding: 1rem 3rem;
-        font-size: 1.2rem;
+        gap: 10px;
         font-weight: 700;
-        border-radius: 50px;
-        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4);
-        transition: all 0.3s ease;
-        color: white;
-    }
-
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(13, 110, 253, 0.6);
-            background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
-        }
-
-    .helper-text {
+        color: #3498db;
+        margin-bottom: 25px;
+        text-transform: uppercase;
         font-size: 0.9rem;
-        color: #6c757d;
-        margin-top: 0.5rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 0.5rem;
+        letter-spacing: 1px;
     }
 
-    .alert {
-        border-radius: 15px;
+    /* Input & Form Styling */
+    .form-label-pro {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .input-pro {
+        border-radius: 12px !important;
+        border: 2px solid #e2e8f0 !important;
+        padding: 12px 16px !important;
+        transition: all 0.2s ease;
+    }
+
+        .input-pro:focus {
+            border-color: #3498db !important;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1) !important;
+        }
+
+    /* Button Style */
+    .btn-submit-appeal {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
         border: none;
-        padding: 1.25rem;
-        animation: slideInDown 0.5s ease;
-        margin-bottom: 2rem;
+        padding: 16px 50px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
+        transition: all 0.3s ease;
     }
 
-        .alert i {
-            font-size: 1.2rem;
+        .btn-submit-appeal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.3);
+            color: white;
         }
 
-    @@keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @@keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @@keyframes slideInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .helper-pro {
+        font-size: 0.85rem;
+        color: #718096;
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
     }
 
     @@media (max-width: 768px) {
-        .form-card {
-            padding: 2rem 1.5rem;
-        }
-
-        .form-header h2 {
-            font-size: 2rem;
-        }
-
-        .btn-submit {
-            padding: 0.875rem 2rem;
-            font-size: 1.1rem;
+        .appeal-card {
+            padding: 30px 20px;
         }
     }
 </style>
 
-<div class="appeal-form-page">
+<div class="appeal-page-wrapper">
     <div class="container">
-        <div class="form-header">
-            <h2>
-                <i class="fas fa-balance-scale me-2"></i>
-                Gửi Yêu cầu Khiếu nại
-            </h2>
-            <p class="subtitle">
-                <i class="fas fa-shield-halved me-2 text-primary"></i>
-                Chúng tôi cam kết xem xét công bằng mọi khiếu nại và xác minh lại thông tin
-            </p>
-        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="appeal-card animate__animated animate__fadeIn">
 
-        <div class="form-card">
-            @if (ViewBag.Message != null)
-            {
-                var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-success";
-                var iconClass = (ViewBag.IsError == true) ? "fa-exclamation-circle" : "fa-check-circle";
+                    <div class="header-pro text-center">
+                        <div class="mb-3">
+                            <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
+                                <i class="fas fa-balance-scale me-2"></i>TRUNG TÂM KHIẾU NẠI
+                            </span>
+                        </div>
+                        <h2>Yêu Cầu Xem Xét Lại</h2>
+                        <p class="text-muted">Chúng tôi luôn lắng nghe và cam kết sự công bằng trong việc xác thực dữ liệu.</p>
+                    </div>
 
-                <div class="alert @alertClass" role="alert">
-                    <i class="fas @iconClass me-2"></i>
-                    @ViewBag.Message
+                    @if (ViewBag.Message != null)
+                    {
+                        var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-success";
+                        <div class="alert @alertClass border-0 rounded-4 p-3 mb-4 shadow-sm">
+                            <i class="fas @(ViewBag.IsError == true ? "fa-exclamation-circle" : "fa-check-circle") me-2"></i>
+                            @ViewBag.Message
+                        </div>
+                    }
+
+                    <div class="info-banner-pro shadow-sm">
+                        <h5><i class="fas fa-info-circle me-2"></i>Bạn nên gửi khiếu nại nếu:</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Số điện thoại hoặc tài khoản của bạn bị báo cáo nhầm.</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Thông tin mô tả hành vi lừa đảo không đúng sự thật.</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Bạn đã giải quyết xong tranh chấp và muốn gỡ bỏ thông tin.</li>
+                        </ul>
+                    </div>
+
+                    <form asp-controller="Home" asp-action="SubmitAppeal" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                        <div class="appeal-section">
+                            <div class="section-label">
+                                <i class="fas fa-file-invoice fs-5"></i>
+                                Chi tiết khiếu nại
+                            </div>
+
+                            <div class="mb-4">
+                                <label asp-for="Query" class="form-label-pro">Số điện thoại / STK / Link cần gỡ bỏ <span class="text-danger">*</span></label>
+                                <input asp-for="Query" class="form-control input-pro" placeholder="Nhập chính xác thông tin bị báo cáo">
+                                <span asp-validation-for="Query" class="text-danger"></span>
+                                <div class="helper-pro">
+                                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    <span>Thông tin phải khớp hoàn toàn với dữ liệu trên hệ thống.</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-0">
+                                <label asp-for="Reason" class="form-label-pro">Lý do & Bằng chứng giải trình <span class="text-danger">*</span></label>
+                                <textarea asp-for="Reason" class="form-control input-pro" style="min-height: 160px;"
+                                          placeholder="Vui lòng nêu rõ lý do và cung cấp các bằng chứng như hình ảnh, email (dạng link hoặc mô tả) để chúng tôi đối soát..."></textarea>
+                                <span asp-validation-for="Reason" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="appeal-section">
+                            <div class="section-label" style="color: #2c3e50;">
+                                <i class="fas fa-id-card fs-5"></i>
+                                Thông tin liên hệ
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="AppellantName" class="form-label-pro">Họ và tên <span class="text-danger">*</span></label>
+                                    <input asp-for="AppellantName" class="form-control input-pro" placeholder="Họ tên người yêu cầu">
+                                    <span asp-validation-for="AppellantName" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="AppellantEmail" class="form-label-pro">Email nhận kết quả <span class="text-danger">*</span></label>
+                                    <input asp-for="AppellantEmail" class="form-control input-pro" type="email" placeholder="example@email.com">
+                                    <span asp-validation-for="AppellantEmail" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-submit-appeal">
+                                <i class="fas fa-paper-plane me-2"></i>XÁC NHẬN GỬI KHIẾU NẠI
+                            </button>
+                            <div class="mt-4 d-flex justify-content-center gap-4 text-muted small">
+                                <span><i class="fas fa-clock me-1 text-primary"></i> Xử lý trong 3-5 ngày</span>
+                                <span><i class="fas fa-user-check me-1 text-success"></i> Thẩm định thủ công</span>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            }
-
-            <div class="info-banner">
-                <h5>
-                    <i class="fas fa-info-circle"></i>
-                    Khi nào bạn nên gửi khiếu nại?
-                </h5>
-                <ul>
-                    <li><i class="fas fa-check text-primary me-2"></i>Bạn bị báo cáo nhầm và có bằng chứng chứng minh</li>
-                    <li><i class="fas fa-check text-primary me-2"></i>Thông tin trên hệ thống không chính xác về bạn</li>
-                    <li><i class="fas fa-check text-primary me-2"></i>Bạn muốn cung cấp giải trình rõ ràng về tình huống</li>
-                </ul>
             </div>
-
-            <form asp-controller="Home" asp-action="SubmitAppeal" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <!-- Thông tin khiếu nại -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-file-alt"></i>
-                        Thông tin khiếu nại
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Query" class="form-label">
-                            <i class="fas fa-search"></i>
-                            Số điện thoại / STK / Link bị báo cáo
-                            <span class="required">*</span>
-                        </label>
-                        <input asp-for="Query" class="form-control" placeholder="Nhập chính xác thông tin đã bị báo cáo">
-                        <span asp-validation-for="Query" class="text-danger"></span>
-                        <div class="helper-text">
-                            <i class="fas fa-exclamation-triangle text-warning"></i>
-                            <span>Thông tin này phải trùng khớp với mục đã bị báo cáo trên hệ thống</span>
-                        </div>
-                    </div>
-
-                    <div class="mb-0">
-                        <label asp-for="Reason" class="form-label">
-                            <i class="fas fa-comment-dots"></i>
-                            Lý do khiếu nại & Bằng chứng
-                            <span class="required">*</span>
-                        </label>
-                        <textarea asp-for="Reason" class="form-control" placeholder="Nêu rõ lý do khiếu nại:&#10;&#10;1. Tại sao bạn cho rằng báo cáo là không chính xác?&#10;2. Bạn có bằng chứng gì để chứng minh?&#10;3. Giải trình chi tiết về tình huống..."></textarea>
-                        <span asp-validation-for="Reason" class="text-danger"></span>
-                        <div class="helper-text">
-                            <i class="fas fa-lightbulb text-warning"></i>
-                            <span>Cung cấp bằng chứng càng chi tiết càng giúp quá trình xử lý nhanh hơn (ảnh chụp màn hình, email, tin nhắn...)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Thông tin người khiếu nại -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-user"></i>
-                        Thông tin người khiếu nại
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="AppellantName" class="form-label">
-                            <i class="fas fa-user-circle"></i>
-                            Tên của bạn
-                            <span class="required">*</span>
-                        </label>
-                        <input asp-for="AppellantName" class="form-control" placeholder="Nhập họ tên đầy đủ">
-                        <span asp-validation-for="AppellantName" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-0">
-                        <label asp-for="AppellantEmail" class="form-label">
-                            <i class="fas fa-envelope"></i>
-                            Email liên hệ
-                            <span class="required">*</span>
-                        </label>
-                        <input asp-for="AppellantEmail" class="form-control" type="email" placeholder="example@email.com">
-                        <span asp-validation-for="AppellantEmail" class="text-danger"></span>
-                        <div class="helper-text">
-                            <i class="fas fa-bell text-info"></i>
-                            <span>Chúng tôi sẽ gửi thông báo kết quả xử lý khiếu nại qua email này</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-submit">
-                        <i class="fas fa-paper-plane me-2"></i>
-                        Gửi Khiếu Nại
-                    </button>
-                </div>
-
-                <div class="text-center mt-4">
-                    <p class="text-muted small mb-0">
-                        <i class="fas fa-clock text-primary me-1"></i>
-                        Thời gian xử lý khiếu nại: 3-5 ngày làm việc
-                    </p>
-                </div>
-            </form>
         </div>
     </div>
 </div>

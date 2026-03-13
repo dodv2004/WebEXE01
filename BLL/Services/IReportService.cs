@@ -54,9 +54,17 @@ namespace BLL.Services
 
         // Tăng số lượt tra cứu (chỉ áp dụng cho tài khoản thường)
         Task IncrementSearchCountAsync(string email);
-        Task<(bool Success, string Message)> UpgradeToVipAsync(string email);
+   
         Task<IEnumerable<Transaction>> GetAllTransactionsAsync();
         Task<IEnumerable<ReporterRankingDto>> GetTopReportersAsync(int count);
         Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<bool> CreatePendingTransactionAsync(string email, decimal amount);
+        Task<(bool Success, string Message)> ApproveTransactionAsync(int transactionId);
+        Task<PaginatedList<Transaction>> GetTransactionsPagedAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<User>> GetUsersPagedAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<ReportCheck>> GetReportsPagedAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<Appeal>> GetAppealsPagedAsync(int pageIndex, int pageSize);
+        Task<bool> CheckHasPendingTransactionAsync(string email);
+        Task<(bool Success, string Message)> RejectTransactionAsync(int transactionId);
     }
 }

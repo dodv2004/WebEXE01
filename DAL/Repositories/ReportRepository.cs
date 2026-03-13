@@ -191,11 +191,8 @@ namespace DAL.Repositories
         // Triển khai hàm thêm giao dịch mới
         public async Task AddTransactionAsync(Transaction transaction)
         {
-            // Thêm bản ghi vào DbSet Transactions
+            // Mặc định Status là 0 (Pending)
             _context.Transactions.Add(transaction);
-
-            // Gọi hàm SaveAsync() có sẵn của bạn để hoàn tất lưu xuống SQL Server
-            await SaveAsync();
         }
 
         // Triển khai hàm lấy toàn bộ lịch sử để quản lý doanh thu
@@ -229,7 +226,77 @@ namespace DAL.Repositories
                 .OrderByDescending(u => u.Id)
                 .ToListAsync();
         }
+        public async Task<Transaction?> GetTransactionByIdAsync(int id)
+        {
+            return await _context.Transactions.FindAsync(id);
+        }
+        // Chỉ lấy tổng doanh thu từ các giao dịch đã được duyệt (Status = 1)
+        public async Task<decimal> GetTotalConfirmedRevenueAsync()
+        {
+            return await _context.Transactions
+                .Where(t => t.Status == 1)
+                .SumAsync(t => t.Amount);
+        }
 
-        
+        // Lấy doanh thu tháng hiện tại đã duyệt
+        public async Task<decimal> GetMonthlyConfirmedRevenueAsync()
+        {
+            var now = DateTime.Now;
+            return await _context.Transactions
+                .Where(t => t.Status == 1 && t.PaymentDate.Month == now.Month && t.PaymentDate.Year == now.Year)
+                .SumAsync(t => t.Amount);
+        }
+        public async Task UpdateTransactionAsync(Transaction transaction)
+        {
+            _context.Transactions.Update(transaction);
+            await SaveAsync(); // Lưu thay đổi ngay để cập nhật Status
+        }
+        public async Task<PaginatedList<Transaction>> GetTransactionsPagedAsync(int pageIndex, int pageSize)
+        {
+            var count = await _context.Transactions.CountAsync();
+            var items = await _context.Transactions
+                .OrderByDescending(t => t.PaymentDate)
+                .Skip((pageIndex - 1) * pageSize) // Bỏ qua các trang trước
+                .Take(pageSize)                   // Chỉ lấy đủ số lượng trang hiện tại
+                .ToListAsync();
+
+            return new PaginatedList<Transaction>(items, count, pageIndex, pageSize);
+        }
+        // Phân trang cho Người dùng
+        public async Task<PaginatedList<User>> GetUsersPagedAsync(int pageIndex, int pageSize)
+        {
+            var count = await _context.Users.CountAsync();
+            var items = await _context.Users
+                .OrderByDescending(u => u.Id)
+                .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<User>(items, count, pageIndex, pageSize);
+        }
+
+        // Phân trang cho Báo cáo
+        public async Task<PaginatedList<ReportCheck>> GetReportsPagedAsync(int pageIndex, int pageSize)
+        {
+            var count = await _context.ReportChecks.CountAsync();
+            var items = await _context.ReportChecks
+                .OrderByDescending(r => r.CheckedAt)
+                .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<ReportCheck>(items, count, pageIndex, pageSize);
+        }
+
+        // Phân trang cho Khiếu nại
+        public async Task<PaginatedList<Appeal>> GetAppealsPagedAsync(int pageIndex, int pageSize)
+        {
+            var count = await _context.Appeals.CountAsync();
+            var items = await _context.Appeals
+                .Include(a => a.ReportCheck)
+                .OrderByDescending(a => a.Id)
+                .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<Appeal>(items, count, pageIndex, pageSize);
+        }
+        public async Task<bool> HasPendingTransactionAsync(string email)
+        {
+            // Status = 0 là đang chờ duyệt
+            return await _context.Transactions
+                .AnyAsync(t => t.Email == email.ToLower().Trim() && t.Status == 0);
+        }
     }
 }

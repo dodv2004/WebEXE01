@@ -212,21 +212,29 @@ namespace ProjectEXE01.Controllers
         public IActionResult UpgradeVip() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessUpgrade()
         {
             var email = HttpContext.Session.GetString("UserEmail");
             if (string.IsNullOrEmpty(email)) return RedirectToAction("Login");
 
-            // Sau khi thanh toán thành công (giả lập), cập nhật VIP
-            var (success, message) = await _service.UpgradeToVipAsync(email);
-
-            if (success)
+            // 1. Kiểm tra nếu đã có yêu cầu đang chờ duyệt thì chặn luôn
+            var isPending = await _service.CheckHasPendingTransactionAsync(email);
+            if (isPending)
             {
-                TempData["Message"] = message;
-                return RedirectToAction("Profile"); // Về trang cá nhân để xem vương miện mới
+                TempData["Error"] = "Bạn đã gửi yêu cầu xác nhận thanh toán. Vui lòng đợi Admin kiểm tra!";
+                return RedirectToAction("Profile");
             }
 
-            ViewBag.Error = message;
+            // 2. Nếu chưa có mới cho phép tạo
+            var success = await _service.CreatePendingTransactionAsync(email, 89000);
+            if (success)
+            {
+                TempData["Message"] = "Gửi yêu cầu thành công! Admin sẽ duyệt sau khi nhận được tiền.";
+                return RedirectToAction("Profile");
+            }
+
+            ViewBag.Error = "Có lỗi xảy ra, vui lòng thử lại sau.";
             return View("UpgradeVip");
         }
     }

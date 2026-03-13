@@ -26,12 +26,12 @@ namespace WebAdmin.Pages.Reports
         [TempData]
         public string StatusMessage { get; set; } = string.Empty;
 
-        public async Task OnGetAsync()
+        public PaginatedList<ReportCheck> PagedData { get; set; }
+
+        public async Task OnGetAsync(int p = 1)
         {
-            // GỌI SERVICE ĐỂ LẤY TẤT CẢ REPORT (bao gồm cả quan hệ Reporters)
-            ReportList = (await _reportService.GetAllReportsAsync())
-                .OrderByDescending(r => r.CheckedAt) // Sắp xếp theo ngày gần nhất
-                .ToList();
+            // Lấy dữ liệu phân trang từ Service (mỗi trang 10 báo cáo)
+            PagedData = await _reportService.GetReportsPagedAsync(p, 5);
         }
 
         // --- HANDLER CHO VIỆC XÁC MINH TRẠNG THÁI (VERDICT) ---

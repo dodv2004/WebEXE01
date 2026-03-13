@@ -37,6 +37,14 @@ namespace DAL.Repositories
         Task<IEnumerable<Transaction>> GetAllTransactionsAsync();
         Task<IEnumerable<ReporterRankingDto>> GetTopReportersAsync(int count);
         Task<IEnumerable<User>> GetAllUsersAsync();
-
+        Task<Transaction?> GetTransactionByIdAsync(int id);
+        public Task<decimal> GetTotalConfirmedRevenueAsync();
+        public Task<decimal> GetMonthlyConfirmedRevenueAsync();
+        Task UpdateTransactionAsync(Transaction transaction);
+        Task<PaginatedList<Transaction>> GetTransactionsPagedAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<User>> GetUsersPagedAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<ReportCheck>> GetReportsPagedAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<Appeal>> GetAppealsPagedAsync(int pageIndex, int pageSize);
+        Task<bool> HasPendingTransactionAsync(string email);
     }
 }

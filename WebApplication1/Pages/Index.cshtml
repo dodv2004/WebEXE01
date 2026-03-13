@@ -1,5 +1,4 @@
-﻿
-@page
+﻿@page
 @model WebAdmin.Pages.IndexModel
 @{
     ViewData["Title"] = "Dashboard Tổng quan";
@@ -7,131 +6,143 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="text-primary fw-bold"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Tổng quan</h1>
-        <p class="lead text-muted">Chào mừng đến với hệ thống quản trị AntiScam 2026.</p>
+        <h2 class="fw-bold text-dark mb-1">Dashboard Tổng quan</h2>
+        <p class="text-muted mb-0">Hệ thống AntiScam 2026 đang vận hành ổn định.</p>
     </div>
-    <div class="text-end">
-        <h4 class="text-warning fw-bold mb-0">Doanh thu tháng này</h4>
-        <h2 class="fw-bold">@Model.MonthlyRevenue.ToString("N0")đ</h2>
+    <div class="bg-white p-3 rounded-4 shadow-sm text-end border-start border-success border-4">
+        <span class="text-muted small text-uppercase d-block fw-bold">Doanh thu tháng này</span>
+        <span class="h4 fw-bold text-success mb-0">@Model.MonthlyRevenue.ToString("N0")đ</span>
     </div>
 </div>
 
-<div class="row">
-    @* Card 1: Doanh thu (Mới thêm) *@
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-wallet fa-3x me-3 opacity-50"></i>
-                    <div>
-                        <h5 class="card-title fw-bold mb-0">TỔNG DOANH THU</h5>
-                        <p class="h3 fw-bold">@Model.TotalRevenue.ToString("N0")đ</p>
-                    </div>
+<h5 class="fw-bold mb-3 text-secondary"><i class="fas fa-chart-line me-2"></i>Số liệu Tài chính & Hệ thống</h5>
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded-4 text-warning">
+                    <i class="fas fa-wallet fa-2x"></i>
                 </div>
-            </div>
-            <div class="card-footer bg-dark bg-opacity-10 border-0">
-                <span class="small fw-bold">Từ các gói nâng cấp VIP 89k</span>
+                <div class="flex-grow-1 ms-3">
+                    <p class="text-muted small mb-1 fw-bold">TỔNG DOANH THU</p>
+                    <h4 class="mb-0 fw-bold text-dark">@Model.TotalRevenue.ToString("N0")đ</h4>
+                </div>
             </div>
         </div>
     </div>
 
-    @* Card 2: Tổng mục ghi nhận *@
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100 bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-list-alt fa-3x me-3 opacity-50"></i>
-                    <div>
-                        <h5 class="card-title fw-bold mb-0">MỤC GHI NHẬN</h5>
-                        <p class="h3 fw-bold">@Model.TotalEntities</p>
-                    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-4 text-primary">
+                    <i class="fas fa-database fa-2x"></i>
                 </div>
-            </div>
-            <div class="card-footer bg-white bg-opacity-25 border-0">
-                <a asp-page="/Reports/Index" class="text-white text-decoration-none small fw-bold">Chi tiết <i class="fas fa-arrow-right"></i></a>
+                <div class="flex-grow-1 ms-3">
+                    <p class="text-muted small mb-1 fw-bold">DỮ LIỆU GHI NHẬN</p>
+                    <h4 class="mb-0 fw-bold text-dark">@Model.TotalEntities</h4>
+                </div>
             </div>
         </div>
     </div>
 
-    @* Card 3: Báo cáo chờ duyệt *@
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100 @(Model.PendingReports > 0 ? "bg-danger" : "bg-success") text-white">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-exclamation-triangle fa-3x me-3 opacity-50"></i>
-                    <div>
-                        <h5 class="card-title fw-bold mb-0">CHỜ DUYỆT</h5>
-                        <p class="h3 fw-bold">@Model.PendingReports</p>
-                    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 @(Model.PendingReports > 0 ? "bg-danger" : "bg-success") bg-opacity-10 p-3 rounded-4 @(Model.PendingReports > 0 ? "text-danger" : "text-success")">
+                    <i class="fas fa-flag fa-2x"></i>
                 </div>
-            </div>
-            <div class="card-footer bg-white bg-opacity-25 border-0">
-                <a asp-page="/Reports/Index" class="text-white text-decoration-none small fw-bold">Duyệt ngay <i class="fas fa-arrow-right"></i></a>
+                <div class="flex-grow-1 ms-3">
+                    <p class="text-muted small mb-1 fw-bold">BÁO CÁO MỚI</p>
+                    <h4 class="mb-0 fw-bold text-dark">@Model.PendingReports</h4>
+                </div>
             </div>
         </div>
     </div>
 
-    @* Card 4: Khiếu nại chờ xử lý *@
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100 @(Model.PendingAppeals > 0 ? "bg-info" : "bg-secondary") text-white">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-gavel fa-3x me-3 opacity-50"></i>
-                    <div>
-                        <h5 class="card-title fw-bold mb-0">KHIẾU NẠI</h5>
-                        <p class="h3 fw-bold">@Model.PendingAppeals</p>
-                    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 bg-info bg-opacity-10 p-3 rounded-4 text-info">
+                    <i class="fas fa-gavel fa-2x"></i>
                 </div>
-            </div>
-            <div class="card-footer bg-white bg-opacity-25 border-0">
-                <a asp-page="/Appeals/Index" class="text-white text-decoration-none small fw-bold">Xử lý <i class="fas fa-arrow-right"></i></a>
+                <div class="flex-grow-1 ms-3">
+                    <p class="text-muted small mb-1 fw-bold">KHIẾU NẠI</p>
+                    <h4 class="mb-0 fw-bold text-dark">@Model.PendingAppeals</h4>
+                </div>
             </div>
         </div>
     </div>
-    @* Card 5: Quản lý người dùng - Màu Tím (User) *@
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100 bg-dark text-white">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-users fa-3x me-3 text-info opacity-75"></i>
-                    <div>
-                        <h5 class="card-title fw-bold mb-0">TỔNG NGƯỜI DÙNG</h5>
-                        <p class="h3 fw-bold">@Model.TotalUsers</p>
-                    </div>
+</div>
+
+<h5 class="fw-bold mb-3 text-secondary"><i class="fas fa-users me-2"></i>Quản lý Người dùng</h5>
+<div class="row g-4 mb-4">
+    <div class="col-xl-4 col-md-6">
+        <div class="card border-0 shadow-sm p-4 bg-white position-relative overflow-hidden">
+            <div class="position-absolute end-0 top-0 p-3 opacity-10">
+                <i class="fas fa-users fa-4x"></i>
+            </div>
+            <p class="text-muted small fw-bold mb-1">TỔNG TÀI KHOẢN</p>
+            <h2 class="fw-bold mb-0">@Model.TotalUsers</h2>
+            <div class="mt-3">
+                <span class="badge bg-light text-dark border">
+                    <i class="fas fa-user-check me-1"></i>Hoạt động
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6">
+        <div class="card border-0 shadow-sm p-4 bg-dark text-white position-relative overflow-hidden">
+             <div class="position-absolute end-0 top-0 p-3 opacity-25">
+                <i class="fas fa-crown fa-4x text-warning"></i>
+            </div>
+            <p class="text-warning small fw-bold mb-1">TÀI KHOẢN VIP</p>
+            <h2 class="fw-bold mb-0 text-white">@Model.VipUsers</h2>
+            <div class="mt-3">
+                <span class="small opacity-75">Chiếm <strong>@Model.VipPercentage%</strong> tổng người dùng</span>
+                <div class="progress mt-2" style="height: 5px; background-color: rgba(255,255,255,0.1);">
+                    <div class="progress-bar bg-warning" style="width: @Model.VipPercentage%"></div>
                 </div>
             </div>
-            <div class="card-footer bg-white bg-opacity-10 border-0">
-                <a asp-page="/Accounts/Index" class="text-info text-decoration-none small fw-bold">
-                    Quản lý tài khoản <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6">
+        <div class="card border-0 shadow-sm p-4 bg-white position-relative overflow-hidden border-start border-secondary border-4">
+            <p class="text-muted small fw-bold mb-1">TÀI KHOẢN THƯỜNG</p>
+            <h2 class="fw-bold mb-0">@Model.NormalUsers</h2>
+            <div class="mt-3">
+                <a asp-page="/Accounts/Index" class="small text-decoration-none text-primary">
+                    Xem danh sách <i class="fas fa-arrow-right ms-1"></i>
                 </a>
             </div>
         </div>
     </div>
 </div>
 
-@* Hoạt động cần chú ý *@
-<div class="row mt-2">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white py-3">
-                <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-bell text-warning me-2"></i>Thông báo hệ thống</h5>
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center">
+        <i class="fas fa-bell text-warning me-2"></i>
+        <h5 class="mb-0 fw-bold">Trạng thái vận hành</h5>
+    </div>
+    <div class="card-body px-4 pb-4">
+        @if (Model.PendingReports > 0 || Model.PendingAppeals > 0)
+        {
+            <div class="alert alert-danger border-0 rounded-4 d-flex align-items-center p-3 mb-0 shadow-sm">
+                <div class="bg-danger text-white rounded-circle p-2 me-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <strong>Chú ý:</strong> Đang có <span class="badge bg-danger">@Model.PendingReports</span> báo cáo và <span class="badge bg-danger">@Model.PendingAppeals</span> khiếu nại cần xử lý ngay.
+                </div>
             </div>
-            <div class="card-body">
-                @if (Model.PendingReports > 0 || Model.PendingAppeals > 0)
-                {
-                    <div class="alert alert-danger mb-0 border-0 shadow-sm">
-                        <i class="fas fa-shield-alt me-2"></i>
-                        <strong>Chú ý:</strong> Đang có @Model.PendingReports báo cáo và @Model.PendingAppeals khiếu nại cần xử lý gấp.
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-success mb-0 border-0 shadow-sm">
-                        <i class="fas fa-check-double me-2"></i>
-                        Mọi thứ đều ổn! Hệ thống sạch bóng báo cáo tồn đọng.
-                    </div>
-                }
+        }
+        else
+        {
+            <div class="alert alert-success border-0 rounded-4 d-flex align-items-center p-3 mb-0 shadow-sm text-success">
+                <i class="fas fa-check-double fs-4 me-3"></i>
+                Mọi thứ đều ổn! Hệ thống sạch bóng báo cáo tồn đọng.
             </div>
-        </div>
+        }
     </div>
 </div>

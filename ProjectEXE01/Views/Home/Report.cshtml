@@ -1,312 +1,247 @@
 ﻿@model DAL.Models.ReportViewModel
 @{
-    ViewData["Title"] = "Gửi Báo cáo Lừa đảo";
+    ViewData["Title"] = "Gửi Báo cáo Lừa đảo - Hệ thống AntiScam";
 }
 
 <style>
-    .report-form-page {
-        background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
-        min-height: calc(100vh - 200px);
-        padding: 3rem 0;
+    /* Đồng bộ Background với Hero trang chủ */
+    .report-page-wrapper {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        min-height: 100vh;
+        padding: 80px 0;
+        position: relative;
     }
 
-    .form-header {
-        text-align: center;
-        margin-bottom: 3rem;
-        animation: fadeInDown 0.8s ease;
+        .report-page-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(231, 76, 60, 0.05) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+    /* Form Card Style */
+    .report-card {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 50px;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-        .form-header h2 {
-            font-size: 2.5rem;
+    .form-header-pro {
+        margin-bottom: 40px;
+    }
+
+        .form-header-pro h2 {
             font-weight: 800;
-            color: #dc3545;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            color: #1a1a2e;
+            letter-spacing: -1px;
         }
 
-        .form-header .subtitle {
-            font-size: 1.1rem;
-            color: #6c757d;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-    .form-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(220, 53, 69, 0.15);
-        padding: 3rem;
-        max-width: 800px;
-        margin: 0 auto;
-        animation: fadeInUp 0.8s ease;
-        border: 2px solid rgba(220, 53, 69, 0.1);
-    }
-
-    .form-section {
-        background: #f8f9fa;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        border-left: 5px solid #dc3545;
-    }
-
-    .form-section-title {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #dc3545;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-        .form-label .required {
-            color: #dc3545;
-            font-size: 1.2rem;
-        }
-
-    .form-control, .form-select {
-        border-radius: 10px;
-        border: 2px solid #e9ecef;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
+    /* Section Styling */
+    .report-section {
+        background: #f8f9fc;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #edf2f7;
         transition: all 0.3s ease;
     }
 
-        .form-control:focus, .form-select:focus {
-            border-color: #dc3545;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+        .report-section:hover {
+            border-color: #e2e8f0;
+            background: #f1f5f9;
         }
 
-    textarea.form-control {
-        resize: vertical;
-        min-height: 120px;
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        border: none;
-        padding: 1rem 3rem;
-        font-size: 1.2rem;
+    .section-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-weight: 700;
-        border-radius: 50px;
-        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
-        transition: all 0.3s ease;
-        color: white;
-    }
-
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(220, 53, 69, 0.6);
-            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-        }
-
-    .helper-text {
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-transform: uppercase;
         font-size: 0.9rem;
-        color: #6c757d;
-        margin-top: 0.5rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 0.5rem;
+        letter-spacing: 1px;
     }
 
-    .alert {
-        border-radius: 15px;
+    /* Input Styling */
+    .form-group-pro {
+        margin-bottom: 20px;
+    }
+
+    .form-label-pro {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .input-pro {
+        border-radius: 12px !important;
+        border: 2px solid #e2e8f0 !important;
+        padding: 12px 16px !important;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: #fff !important;
+    }
+
+        .input-pro:focus {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+        }
+
+    /* Button Styling */
+    .btn-send-report {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
         border: none;
-        padding: 1.25rem;
-        animation: slideInDown 0.5s ease;
-        margin-bottom: 2rem;
+        padding: 16px 50px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        transition: all 0.3s ease;
     }
 
-        .alert i {
-            font-size: 1.2rem;
+        .btn-send-report:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(231, 76, 60, 0.4);
+            color: white;
         }
 
-    @@keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    /* Helper & Validation */
+    .helper-pro {
+        font-size: 0.85rem;
+        color: #718096;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    @@keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .text-danger {
+        font-size: 0.85rem;
+        font-weight: 500;
     }
 
-    @@keyframes slideInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
+    /* Responsive */
     @@media (max-width: 768px) {
-        .form-card {
-            padding: 2rem 1.5rem;
+        .report-card {
+            padding: 30px 20px;
         }
 
-        .form-header h2 {
-            font-size: 2rem;
-        }
-
-        .btn-submit {
-            padding: 0.875rem 2rem;
-            font-size: 1.1rem;
+        .form-header-pro h2 {
+            font-size: 1.75rem;
         }
     }
 </style>
 
-<div class="report-form-page">
+<div class="report-page-wrapper">
     <div class="container">
-        <div class="form-header">
-            <h2>
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                Gửi Báo cáo Lừa đảo
-            </h2>
-            <p class="subtitle">
-                <i class="fas fa-shield-alt me-2 text-danger"></i>
-                Thông tin của bạn sẽ giúp bảo vệ hàng nghìn người khác khỏi các thủ đoạn lừa đảo
-            </p>
-        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="report-card animate__animated animate__fadeIn">
 
-        <div class="form-card">
-            @if (ViewBag.Message != null)
-            {
-                var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-success";
-                var iconClass = (ViewBag.IsError == true) ? "fa-exclamation-circle" : "fa-check-circle";
-
-                <div class="alert @alertClass" role="alert">
-                    <i class="fas @iconClass me-2"></i>
-                    @ViewBag.Message
-                </div>
-            }
-
-            <form asp-controller="Home" asp-action="SubmitReport" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <!-- Thông tin lừa đảo -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-file-alt"></i>
-                        Thông tin về đối tượng lừa đảo
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Query" class="form-label">
-                            <i class="fas fa-search"></i>
-                            Số điện thoại / STK / Link
-                            <span class="required">*</span>
-                        </label>
-                        <input asp-for="Query" class="form-control" placeholder="Ví dụ: 0912345678 hoặc https://example.com">
-                        <span asp-validation-for="Query" class="text-danger"></span>
-                        <div class="helper-text">
-                            <i class="fas fa-info-circle text-primary"></i>
-                            <span>Nhập chính xác số điện thoại, tài khoản ngân hàng hoặc đường link đáng ngờ</span>
+                    <div class="form-header-pro text-center">
+                        <div class="mb-3">
+                            <span class="badge bg-danger-soft text-danger px-3 py-2 rounded-pill fw-bold" style="background: rgba(231, 76, 60, 0.1);">
+                                <i class="fas fa-shield-alt me-2"></i>CỘNG ĐỒNG BẢO MẬT
+                            </span>
                         </div>
+                        <h2>Gửi Báo Cáo Lừa Đảo</h2>
+                        <p class="text-muted">Đóng góp của bạn là vũ khí mạnh nhất để loại bỏ tội phạm mạng.</p>
                     </div>
 
-                    <div class="mb-4">
-                        <label asp-for="Type" class="form-label">
-                            <i class="fas fa-tags"></i>
-                            Loại báo cáo
-                            <span class="required">*</span>
-                        </label>
-                        <select asp-for="Type" class="form-select">
-                            <option value="">-- Chọn loại báo cáo --</option>
-                            <option value="phone">📱 Số điện thoại</option>
-                            <option value="bank">🏦 Tài khoản ngân hàng</option>
-                            <option value="link">🔗 Link/Website lừa đảo</option>
-                        </select>
-                        <span asp-validation-for="Type" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-0">
-                        <label asp-for="Note" class="form-label">
-                            <i class="fas fa-comment-dots"></i>
-                            Mô tả chi tiết
-                        </label>
-                        <textarea asp-for="Note" class="form-control" placeholder="Mô tả về hành vi lừa đảo: nội dung tin nhắn, cuộc gọi, cách thức lừa đảo..."></textarea>
-                        <span asp-validation-for="Note" class="text-danger"></span>
-                        <div class="helper-text">
-                            <i class="fas fa-lightbulb text-warning"></i>
-                            <span>Chi tiết càng đầy đủ càng giúp chúng tôi xác minh nhanh hơn</span>
+                    @if (ViewBag.Message != null)
+                    {
+                        var alertClass = (ViewBag.IsError == true) ? "alert-danger" : "alert-success";
+                        <div class="alert @alertClass border-0 rounded-4 p-3 mb-4 shadow-sm animate__animated animate__shakeX">
+                            <i class="fas @(ViewBag.IsError == true ? "fa-exclamation-circle" : "fa-check-circle") me-2"></i>
+                            @ViewBag.Message
                         </div>
-                    </div>
-                </div>
+                    }
 
-                <!-- Thông tin người báo cáo -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-user"></i>
-                        Thông tin người báo cáo
-                    </div>
+                    <form asp-controller="Home" asp-action="SubmitReport" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-                    <div class="mb-4">
-                        <label asp-for="ReporterName" class="form-label">
-                            <i class="fas fa-user-circle"></i>
-                            Tên của bạn
-                            <span class="required">*</span>
-                        </label>
-                        <input asp-for="ReporterName" class="form-control" placeholder="Nhập họ tên đầy đủ">
-                        <span asp-validation-for="ReporterName" class="text-danger"></span>
-                    </div>
+                        <div class="report-section shadow-sm">
+                            <div class="section-label">
+                                <i class="fas fa-user-secret fs-5"></i>
+                                Đối tượng nghi vấn
+                            </div>
 
-                    <div class="mb-0">
-                        <label asp-for="ReporterEmail" class="form-label">
-                            <i class="fas fa-envelope"></i>
-                            Email của bạn
-                            <span class="required">*</span>
-                        </label>
-                        <input asp-for="ReporterEmail" class="form-control" type="email" placeholder="example@email.com">
-                        <span asp-validation-for="ReporterEmail" class="text-danger"></span>
-                        <div class="helper-text">
-                            <i class="fas fa-lock text-success"></i>
-                            <span>Email được bảo mật và dùng để xác định báo cáo duy nhất của bạn</span>
+                            <div class="row">
+                                <div class="col-md-7 form-group-pro">
+                                    <label asp-for="Query" class="form-label-pro">Số điện thoại / STK / Link <span class="text-danger">*</span></label>
+                                    <input asp-for="Query" class="form-control input-pro" placeholder="Ví dụ: 0912... hoặc https://...">
+                                    <span asp-validation-for="Query" class="text-danger"></span>
+                                    <div class="helper-pro"><i class="fas fa-info-circle text-primary"></i> Nhập chính xác thông tin cần tố cáo</div>
+                                </div>
+
+                                <div class="col-md-5 form-group-pro">
+                                    <label asp-for="Type" class="form-label-pro">Loại hình <span class="text-danger">*</span></label>
+                                    <select asp-for="Type" class="form-select input-pro">
+                                        <option value="">-- Chọn loại --</option>
+                                        <option value="phone">📱 Số điện thoại</option>
+                                        <option value="bank">🏦 Tài khoản ngân hàng</option>
+                                        <option value="link">🔗 Website lừa đảo</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group-pro mt-2">
+                                <label asp-for="Note" class="form-label-pro">Mô tả chi tiết hành vi</label>
+                                <textarea asp-for="Note" class="form-control input-pro" style="min-height: 120px;" placeholder="Ví dụ: Giả danh công an gọi điện hăm dọa, gửi link bình chọn cuộc thi giả mạo..."></textarea>
+                                <div class="helper-pro"><i class="fas fa-lightbulb text-warning"></i> Càng chi tiết, hệ thống càng nhanh chóng xác minh.</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-submit">
-                        <i class="fas fa-paper-plane me-2"></i>
-                        Gửi Báo Cáo
-                    </button>
-                </div>
+                        <div class="report-section shadow-sm">
+                            <div class="section-label" style="color: #2c3e50;">
+                                <i class="fas fa-user-shield fs-5"></i>
+                                Định danh người báo cáo
+                            </div>
 
-                <div class="text-center mt-4">
-                    <p class="text-muted small mb-0">
-                        <i class="fas fa-shield-alt text-danger me-1"></i>
-                        Cam kết bảo mật thông tin người báo cáo
-                    </p>
+                            <div class="row">
+                                <div class="col-md-6 form-group-pro">
+                                    <label asp-for="ReporterName" class="form-label-pro">Họ và tên của bạn <span class="text-danger">*</span></label>
+                                    <input asp-for="ReporterName" class="form-control input-pro" placeholder="Nhập tên đầy đủ">
+                                    <span asp-validation-for="ReporterName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 form-group-pro">
+                                    <label asp-for="ReporterEmail" class="form-label-pro">Địa chỉ Email <span class="text-danger">*</span></label>
+                                    <input asp-for="ReporterEmail" class="form-control input-pro" type="email" placeholder="example@email.com">
+                                    <span asp-validation-for="ReporterEmail" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mt-2 py-2 px-3 rounded-3" style="background: #eef2f7; border-left: 4px solid #3498db;">
+                                <p class="mb-0 small text-muted">
+                                    <i class="fas fa-lock me-2 text-primary"></i>
+                                    <strong>Cam kết bảo mật:</strong> Danh tính của bạn được mã hóa và chỉ phục vụ mục đích xác thực báo cáo.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-send-report">
+                                <i class="fas fa-paper-plane me-2"></i>GỬI BÁO CÁO NGAY
+                            </button>
+                            <p class="mt-4 text-muted small">
+                                Bằng việc nhấn gửi, bạn cam đoan thông tin trên là đúng sự thật.
+                            </p>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

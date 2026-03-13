@@ -27,13 +27,12 @@ namespace WebAdmin.Pages.Appeals
         [TempData]
         public string StatusMessage { get; set; } = string.Empty;
 
-        public async Task OnGetAsync()
+        public PaginatedList<Appeal> PagedData { get; set; }
+
+        public async Task OnGetAsync(int p = 1)
         {
-            // GỌI SERVICE ĐỂ LẤY DỮ LIỆU (đã có Include ReportCheck trong Service)
-            // Lấy các khiếu nại đang chờ xử lý
-            AppealList = (await _reportService.GetPendingAppealsAsync())
-                .OrderByDescending(a => a.SubmittedAt)
-                .ToList();
+            // Lấy khiếu nại phân trang (mỗi trang 5 khiếu nại để dễ xử lý chi tiết)
+            PagedData = await _reportService.GetAppealsPagedAsync(p, 5);
         }
 
         // --- HANDLERS XỬ LÝ HÀNH ĐỘNG CỦA ADMIN ---
